@@ -13,13 +13,13 @@ export async function POST(request: Request) {
   try {
     requireSameOrigin(request);
     const parsed = chatInputSchema.safeParse(JSON.parse(await readBody(request, 8192)));
-    if (!parsed.success) return privateJson({ error: "Please send a message of 1–1000 characters." }, 400);
+    if (!parsed.success) return privateJson({ error: "Envie uma mensagem de 1 a 1.000 caracteres." }, 400);
     const conversation = await currentConversation(request);
-    if (!conversation) return privateJson({ error: "Your chat session expired. Please close and reopen the chat." }, 401);
-    if (!await consumeLimit(requestLimitKey(request, "chat-message"), 30)) return privateJson({ error: "Please take a short break and try again in 15 minutes." }, 429);
+    if (!conversation) return privateJson({ error: "A sessão expirou. Feche e abra o assistente novamente." }, 401);
+    if (!await consumeLimit(requestLimitKey(request, "chat-message"), 30)) return privateJson({ error: "Aguarde 15 minutos antes de tentar novamente." }, 429);
     // One model call per admitted turn, plus a shared daily cap across all visitors.
     if (process.env.ANTHROPIC_API_KEY && !await consumeLimit(`chat-global:${new Date().toISOString().slice(0, 10)}`, 250, 86_400)) {
-      return privateJson({ error: "Our coffee guide has reached today's demo limit. You can still use the FAQ or Talk to a human." }, 429);
+      return privateJson({ error: "O assistente atingiu o limite diário. Consulte as dúvidas frequentes." }, 429);
     }
     const { message, requestId } = parsed.data;
     const history = await beginChatTurn(conversation.id, requestId, message);
@@ -31,7 +31,7 @@ export async function POST(request: Request) {
       async start(controller) {
         const emit = (event: ChatEvent) => { if (!signal.aborted) controller.enqueue(encoder.encode(`${JSON.stringify(event)}\n`)); };
         try {
-          emit({ type: "status", text: "Preparing your reply…" });
+          emit({ type: "status", text: "Preparando sua resposta…" });
           let result;
           try { result = await answerChat(message, history, signal); }
           catch { result = { reply: { text: CHAT_UNAVAILABLE, topic: "provider-error", handoff: true }, costMicrousd: 0 }; }
@@ -52,7 +52,7 @@ export async function POST(request: Request) {
     return new Response(body, { headers: { "Content-Type": "application/x-ndjson; charset=utf-8", "Cache-Control": "no-store, no-transform", "X-Accel-Buffering": "no" } });
   } catch (error) {
     if (error instanceof CheckoutError) return privateJson({ error: error.message }, error.status);
-    if (error instanceof SyntaxError) return privateJson({ error: "Invalid request." }, 400);
+    if (error instanceof SyntaxError) return privateJson({ error: "Solicitação inválida." }, 400);
     return privateJson({ error: CHAT_UNAVAILABLE }, 503);
   }
 }

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { OrderDetails, type OrderDisplay } from "@/components/orders/order-details";
+import {saveBag} from '@/components/fashion/store';
 import { cart } from "@/lib/cart/store";
 import { cartSchema } from "@/lib/cart/schema";
 
@@ -28,6 +29,12 @@ export function Confirmation({ sessionId }: { sessionId: string }) {
         if (data.order && data.order.status !== "PENDING") {
           setWaiting(false);
           try {
+            const fashion=JSON.parse(sessionStorage.getItem('aureo-checkout')??'null');
+            const current=JSON.parse(localStorage.getItem('aureo-bag-v1')??'[]');
+            if(fashion?.sessionId===sessionId && ['PAID','SHIPPED','DELIVERED','PAYMENT_REVIEW'].includes(data.order.status)){
+              if(JSON.stringify(current)===JSON.stringify(fashion.items))saveBag([]);
+              sessionStorage.removeItem('aureo-checkout');
+            }
             const attempt = JSON.parse(sessionStorage.getItem("ember-oak-checkout") ?? "null");
             if (attempt?.sessionId === sessionId && data.order.status !== "EXPIRED") {
               const purchased = cartSchema.safeParse({ items: JSON.parse(attempt.fingerprint).cartItems });
@@ -49,16 +56,16 @@ export function Confirmation({ sessionId }: { sessionId: string }) {
   return <div className="space-y-6">
     <div aria-live="polite">
       {order ? <OrderDetails order={order} /> : <div className="rounded-3xl border border-border bg-card p-8">
-        <h2 className="text-2xl font-semibold">{waiting ? "Checking your payment…" : "Confirmation is not available yet"}</h2>
-        <p className="mt-3 text-muted-foreground">We&apos;re waiting for a secure confirmation from our payment partner. Returning to this page does not confirm payment. If you already paid, please don&apos;t pay again.</p>
+        <h2 className="text-2xl font-semibold">{waiting ? "Consultando pagamento…" : "Confirmação ainda indisponível"}</h2>
+        <p className="mt-3 text-muted-foreground">Aguardamos a confirmação segura do provedor. Retornar a esta página não confirma o pagamento. Se já pagou, não pague novamente.</p>
       </div>}
     </div>
     {(!order || order.status === "PENDING") && <Button variant="outline" disabled={waiting} onClick={() => { setWaiting(true); setRetry(retry + 1); }}>
-      {waiting ? "Waiting for confirmation…" : "Check again"}
+      {waiting ? "Aguardando confirmação…" : "Consultar novamente"}
     </Button>}
     <div className="flex flex-wrap gap-3">
-      <Button asChild><Link href="/track-order">Track your order</Link></Button>
-      <Button asChild variant="outline"><Link href="/shop">Continue shopping</Link></Button>
+      <Button asChild><Link href="/track-order">Acompanhe seu pedido</Link></Button>
+      <Button asChild variant="outline"><Link href="/shop">Continuar explorando</Link></Button>
     </div>
   </div>;
 }

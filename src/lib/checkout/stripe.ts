@@ -13,7 +13,7 @@ export function getStripe() {
 }
 
 export function siteOrigin() {
-  const url = new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3100");
+  const url = new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3200");
   if (url.username || url.password ||
     (url.protocol !== "https:" && !(url.protocol === "http:" && ["localhost", "127.0.0.1"].includes(url.hostname)))) {
     throw new Error("The site URL must use HTTPS, except on localhost.");

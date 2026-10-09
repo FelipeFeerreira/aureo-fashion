@@ -1,6 +1,7 @@
 import "server-only";
 import { z } from "zod";
 import type { Tool } from "@anthropic-ai/sdk/resources/messages";
+import { effectivePrice } from "@/lib/fashion/catalog";
 import { db } from "@/lib/db";
 import { lookupOrder } from "@/lib/orders/lookup";
 import { productSearchSchema, productIdSchema, orderToolSchema, type ChatReply } from "./schema";
@@ -9,6 +10,7 @@ import { knowledge, safeReplies } from "./knowledge";
 export const chatProductSelect = {
   id: true, name: true, slug: true, type: true, priceCents: true, stock: true,
   imageUrl: true, imageAlt: true, tastingNotes: true, tagline: true,
+  salePriceCents:true, saleStartsAt:true,saleEndsAt:true,archived:true,categoryId:true,composition:true,fit:true,variants:{where:{active:true},select:{size:true,color:true,stock:true}},
 } as const;
 const knowledgeSchema = z.object({ id: z.enum(knowledge.map((entry) => entry.id) as [string, ...string[]]) }).strict();
 const replySchema = z.object({ kind: z.enum(["greeting", "clarify", "off_topic", "handoff", "order_details"]) }).strict();
@@ -29,23 +31,23 @@ export async function executeChatTool(name: string, input: unknown, currentMessa
       const filter = productSearchSchema.parse(input);
       const products = await db.product.findMany({
         where: {
-          stock: { gt: 0 }, ...(filter.type && { type: filter.type }),
-          ...(filter.roast && { roastLevel: filter.roast }), ...(filter.brew && { brewMethods: { has: filter.brew } }),
-          ...(filter.acidity && { acidity: filter.acidity }),
+          archived: false, categoryId: {not: null},
+          variants: {some: {active:true, stock:{gt:0}, ...(filter.size?{size:filter.size}:{}), ...(filter.color?{color:filter.color}:{})}},
+          ...(filter.category ? {category:{slug:filter.category}} : {}),
           ...(filter.maxPriceCents !== undefined && { priceCents: { lte: filter.maxPriceCents } }),
           ...(filter.query && { name: { contains: filter.query, mode: "insensitive" } }),
         }, select: chatProductSelect, take: 3, orderBy: [{ featured: "desc" }, { sortOrder: "asc" }, { id: "asc" }],
       });
-      return { topic: "products", products, text: products.length
-        ? "Here are some matches from our shop. The cards show the latest prices and availability. Coffee added here is whole bean; open a product to choose another grind."
-        : "I couldn't find an available product matching those preferences. Try a different roast, brew method or budget, or ask the team for help.", handoff: !products.length };
+      return { topic: "products", products:products.map(p=>({...p,priceCents:effectivePrice(p),stock:p.variants.reduce((n,v)=>n+v.stock,0)})), text: products.length
+        ? "Estas peças combinam com a sua busca. Abra a peça para conferir cores, tamanhos, composição e medidas. Os preços vêm do catálogo."
+        : "Não encontrei peças disponíveis com essas preferências. Tente outro tamanho, cor ou orçamento.", handoff: !products.length };
     }
     case "get_product": {
       const { id } = productIdSchema.parse(input);
-      const product = await db.product.findUnique({ where: { id }, select: chatProductSelect });
-      return { topic: "product-detail", products: product ? [product] : [], text: product
-        ? "Here are the current details from our catalog. Open the product for its full description and grind options."
-        : "That product isn't in our catalog. Let's search for another coffee.", handoff: !product };
+      const product = await db.product.findFirst({ where: { id,archived:false,categoryId:{not:null} }, select: chatProductSelect });
+      return { topic: "product-detail", products: product ? [{...product,priceCents:effectivePrice(product),stock:product.variants.reduce((n,v)=>n+v.stock,0)}] : [], text: product
+        ? `Composição: ${product.composition} Modelagem: ${product.fit} Disponibilidade: ${product.variants.filter(v=>v.stock>0).map(v=>`${v.color} / ${v.size}`).join(", ")||"Sem estoque"}. Confira o guia de medidas na página da peça.`
+        : "Esta peça não está disponível no catálogo. Vamos procurar outra opção.", handoff: !product };
     }
     case "get_order_status": {
       const { order_number, email } = orderToolSchema.parse(input);
@@ -55,9 +57,9 @@ export async function executeChatTool(name: string, input: unknown, currentMessa
         return { topic: "order-credentials", text: safeReplies.order_details };
       }
       const order = await lookupOrder({ orderNumber: order_number, email });
-      return order ? { topic: "order-status", text: "Here's the status recorded for your order. This is a demo; no real order will be shipped.",
+      return order ? { topic: "order-status", text: "Este é o status registrado para seu pedido de teste. Não há envio real.",
         order: { number: order.number, status: order.status, totalCents: order.totalCents, trackingNumber: order.trackingNumber } }
-        : { topic: "order-not-found", text: "I couldn't find an order matching both details. Please check the number and checkout email, or choose Talk to a human.", handoff: true };
+        : { topic: "order-not-found", text: "Não encontrei um pedido com esses dados. Confira o número e o e-mail do checkout.", handoff: true };
     }
     case "answer_store_question": {
       const { id } = knowledgeSchema.parse(input);

@@ -10,6 +10,6 @@ export async function POST(request: Request) {
     return privateJson({ order: await lookupSession(body.sessionId) });
   } catch (error) {
     if (error instanceof CheckoutError) return privateJson({ error: error.message }, error.status);
-    return privateJson({ error: "Could not check confirmation." }, 503);
+    return privateJson({ error: "Não foi possível consultar a confirmação." }, 503);
   }
 }

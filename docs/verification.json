@@ -1,0 +1,31 @@
+{
+  "verifiedAt": "2026-10-09T17:00:40.413Z",
+  "environment": "Ubuntu, Node 24.21.0, PostgreSQL 17, local Next.js 16.4.0 production build",
+  "unitTests": 63,
+  "integrationTests": 63,
+  "browserTestsPassed": 7,
+  "browserTestsSkipped": 1,
+  "browserSkipReason": "Duplicate mobile owner mutation omitted to avoid concurrent editing of the same fixture",
+  "checks": {
+    "typescript": "passed",
+    "eslint": "passed",
+    "productionBuild": "passed",
+    "gitDiffCheck": "passed",
+    "productionDependencyVulnerabilities": 0
+  },
+  "lighthouse": {
+    "url": "http://localhost:3201/",
+    "formFactor": "mobile",
+    "throttlingMethod": "simulate",
+    "scores": {
+      "performance": 91,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    },
+    "lcp": "3.3 s",
+    "tbt": "150 ms",
+    "cls": "0"
+  },
+  "externalServices": "Payment, Cloudinary and Anthropic calls mocked in tests. No live payment, message, upload or deployment performed."
+}

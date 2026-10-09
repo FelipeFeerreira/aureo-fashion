@@ -9,10 +9,9 @@ export const leadSchema = z.object({
 export const conversionSchema = z.object({ messageId: z.string().min(1).max(64), productId: z.string().min(1).max(64) }).strict();
 export const productSearchSchema = z.object({
   query: z.string().trim().max(80).optional(),
-  type: z.enum(["COFFEE", "BUNDLE", "ACCESSORY"]).optional(),
-  roast: z.enum(["LIGHT", "MEDIUM", "MEDIUM_DARK", "DARK"]).optional(),
-  brew: z.enum(["ESPRESSO", "FILTER", "FRENCH_PRESS", "COLD_BREW"]).optional(),
-  acidity: z.enum(["LOW", "MEDIUM", "HIGH"]).optional(),
+  size: z.string().max(20).optional(),
+  color: z.string().max(40).optional(),
+  category: z.string().max(80).optional(),
   maxPriceCents: z.number().int().min(0).max(100_000).optional(),
 }).strict();
 export const productIdSchema = z.object({ id: z.string().min(1).max(64) }).strict();

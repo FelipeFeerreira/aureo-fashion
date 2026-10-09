@@ -6,11 +6,11 @@ export const knowledge = [
 ];
 
 export const safeReplies = {
-  greeting: "Hello! I'm the Ember & Oak coffee guide. Tell me how you brew and what flavors you enjoy, or ask about shipping, returns or an order.",
-  clarify: "Let's find your next favorite cup. Do you brew espresso, pour-over, French press or cold brew? Do you prefer bright and fruity or rich and chocolatey?",
-  off_topic: "I can help with Ember & Oak products, coffee, store policies and orders. For anything else, please use a different service. What would you like to know about coffee?",
-  handoff: "I don't have a verified answer for that. Choose Talk to a human and leave your name, email and question for the store team. This demo saves your request but does not send a real support response.",
-  order_details: "Please send your order number (EO- followed by 16 letters or numbers) and checkout email together in one message. You can also use our Track your order page.",
+ greeting: "Olá! Posso ajudar a encontrar peças, tamanhos e materiais. Que estilo você procura e qual é o seu orçamento?",
+ clarify: "Você procura uma camiseta, moletom, calça ou jaqueta? Conte seu tamanho, cores preferidas e orçamento.",
+ off_topic: "Posso ajudar com as peças, medidas, políticas e pedidos desta loja.",
+ handoff: "Não tenho uma resposta verificada para isso. Consulte nossas dúvidas frequentes. O atendimento humano ainda não está ativo nesta demonstração.",
+ order_details: "Envie o número do pedido (EO- e 16 caracteres) e o e-mail do checkout juntos nesta mensagem. Também é possível usar Acompanhe seu pedido.",
 };
 
 export function redactChatText(text: string) {

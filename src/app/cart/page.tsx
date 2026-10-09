@@ -1,16 +1,3 @@
-import type { Metadata } from "next";
-import { CartView } from "@/components/cart/cart-view";
-
-export const metadata: Metadata = {
-  title: "Your cart",
-  robots: { index: false },
-};
-
-export default function CartPage() {
-  return (
-    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-      <h1 className="mb-10 text-4xl font-semibold sm:text-5xl">Your cart</h1>
-      <CartView />
-    </div>
-  );
-}
+import {Bag} from '@/components/fashion/shopping';
+export const metadata={title:'Sua sacola',robots:{index:false}};
+export default function Page(){return <div className="section"><div className="catalog-title"><span className="eyebrow">SUAS ESCOLHAS, SEU ESTILO</span><h1>Sua sacola.</h1></div><Bag/></div>;}

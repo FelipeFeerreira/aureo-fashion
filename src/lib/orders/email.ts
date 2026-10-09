@@ -12,26 +12,26 @@ export async function sendOrderEmail(orderId: string) {
     const order = await tx.order.findUniqueOrThrow({ where: { id: orderId }, include: { items: true } });
     if (!order.paidAt || !order.email || order.emailSentAt) return;
     const review = order.status === "PAYMENT_REVIEW";
-    const subject = `${review ? "Payment received — order under review" : "Order confirmed"}: ${order.number}`;
+    const subject = `${review ? "Pagamento recebido — pedido em revisão" : "Pedido de teste confirmado"}: ${order.number}`;
     const text = [
-      "Ember & Oak Coffee Roasters", "",
-      "Demo store: this is a test purchase. No real order will be shipped.", "",
-      review ? "Your test payment was received, but stock changed during checkout. Your order needs manual review. Please contact support; do not pay again."
-        : "Thank you! Your test payment is confirmed.",
-      `Order: ${order.number}`, "",
-      ...order.items.map((item) => `${item.quantity} x ${item.name}${item.grind ? ` (${grindLabels[item.grind as Grind]})` : ""} — ${formatPrice(item.unitPriceCents * item.quantity)}`),
-      "", `Subtotal: ${formatPrice(order.subtotalCents)}`, `Shipping: ${formatPrice(order.shippingCents)}`,
+      (await tx.storeSettings.findUnique({where:{id:"store"}}))?.name ?? "AUREO", "",
+      "Loja demonstrativa: compra de teste. Nenhum pedido real será enviado.", "",
+      review ? "Pagamento de teste recebido. O estoque mudou durante o checkout e o pedido precisa de revisão. Não pague novamente."
+        : "Seu pagamento de teste foi confirmado.",
+      `Pedido: ${order.number}`, "",
+      ...order.items.map((item) => `${item.quantity} x ${item.name}${item.size ? ` (${item.color} / ${item.size})` : ""}${item.grind ? ` (${grindLabels[item.grind as Grind]})` : ""} — ${formatPrice(item.unitPriceCents * item.quantity)}`),
+      "", `Subtotal: ${formatPrice(order.subtotalCents)}`, `Frete de teste: ${formatPrice(order.shippingCents)}`,
       `Total: ${formatPrice(order.totalCents)}`, "",
-      `Track your order: ${order.checkoutOrigin}/track-order`,
-      "Enter your order number and the email used at checkout.",
-      "Questions? hello@emberandoak.example",
+      `Acompanhe seu pedido: ${order.checkoutOrigin}/track-order`,
+      "Informe o número do pedido e o e-mail usado no checkout.",
+      "Atendimento humano ainda não configurado.",
     ].join("\n");
     if (!process.env.RESEND_API_KEY) {
       console.info("[email:local-preview]", { to: order.email, subject, text });
     } else {
       const resend = new Resend(process.env.RESEND_API_KEY);
       const { error } = await resend.emails.send({
-        from: process.env.RESEND_FROM ?? "Ember & Oak <onboarding@resend.dev>",
+        from: process.env.RESEND_FROM ?? "AUREO <onboarding@resend.dev>",
         to: order.email, subject, text,
       }, { idempotencyKey: `order-confirmation-${order.id}` });
       if (error) throw new Error("Confirmation email delivery failed.");

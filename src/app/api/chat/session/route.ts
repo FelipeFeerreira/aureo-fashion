@@ -10,7 +10,7 @@ export async function POST(request: Request) {
     let conversation = await currentConversation(request);
     let cookie: string | undefined;
     if (!conversation) {
-      if (!await consumeLimit(requestLimitKey(request, "chat-session"), 10, 3600)) return privateJson({ error: "Please try opening a new chat later." }, 429);
+      if (!await consumeLimit(requestLimitKey(request, "chat-session"), 10, 3600)) return privateJson({ error: "Aguarde antes de abrir uma nova conversa." }, 429);
       const created = await createConversation(); conversation = created.conversation; cookie = created.cookie;
     }
     const response = privateJson({ messages: await conversationMessages(conversation.id), remaining: MAX_CHAT_MESSAGES - conversation.messageCount,
@@ -19,6 +19,6 @@ export async function POST(request: Request) {
     return response;
   } catch (error) {
     if (error instanceof CheckoutError) return privateJson({ error: error.message }, error.status);
-    return privateJson({ error: "We couldn't open your chat. Please try again." }, 503);
+    return privateJson({ error: "Não foi possível abrir a conversa. Tente novamente." }, 503);
   }
 }

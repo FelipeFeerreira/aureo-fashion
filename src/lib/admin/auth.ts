@@ -2,7 +2,7 @@ import "server-only";
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import { db } from "@/lib/db";
 
-export const ADMIN_COOKIE = "ember-oak-owner";
+export const ADMIN_COOKIE = "aureo-owner";
 export const ADMIN_SESSION_SECONDS = 8 * 60 * 60;
 const digest = (value: string) => createHash("sha256").update(value).digest("hex");
 

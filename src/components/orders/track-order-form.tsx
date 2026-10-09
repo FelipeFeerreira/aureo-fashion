@@ -24,19 +24,19 @@ export function TrackOrderForm() {
       if (!response.ok) throw new Error(result.error);
       setOrder(result.order);
     } catch (error) {
-      setError(error instanceof Error ? error.message : "We could not look up your order. Please try again.");
+      setError(error instanceof Error ? error.message : "Não foi possível consultar. Tente novamente.");
     } finally { setBusy(false); }
   }
   return <div className="space-y-8">
     <form onSubmit={submit} className="space-y-5 rounded-3xl border border-border bg-card p-6 sm:p-8">
-      <div className="space-y-2"><Label htmlFor="orderNumber">Order number</Label>
+      <div className="space-y-2"><Label htmlFor="orderNumber">Número do pedido</Label>
         <Input id="orderNumber" name="orderNumber" placeholder="EO-0123456789ABCDEF" required maxLength={19} autoCapitalize="characters" spellCheck={false} />
-        <p className="text-xs text-muted-foreground">Find this on your confirmation page or email.</p>
+        <p className="text-xs text-muted-foreground">Encontre na confirmação do pedido.</p>
       </div>
-      <div className="space-y-2"><Label htmlFor="email">Email used at checkout</Label>
+      <div className="space-y-2"><Label htmlFor="email">E-mail usado no checkout</Label>
         <Input id="email" name="email" type="email" autoComplete="email" required maxLength={254} />
       </div>
-      <Button type="submit" size="lg" className="w-full" disabled={busy}>{busy ? "Finding your order…" : "Find my order"}</Button>
+      <Button type="submit" size="lg" className="w-full" disabled={busy}>{busy ? "Buscando pedido…" : "Buscar meu pedido"}</Button>
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
     </form>
     <div aria-live="polite">{order && <OrderDetails order={order} />}</div>

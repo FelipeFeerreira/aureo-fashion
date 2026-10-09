@@ -32,6 +32,10 @@ beforeEach(async () => {
     id: productId, slug: productId, name: "Database Coffee", type: "COFFEE", tagline: "Sweet and balanced", description: "Fixture",
     priceCents: 2735, stock: 7, tastingNotes: ["Cocoa"], brewMethods: ["ESPRESSO"], imageUrl: "/images/products/huila-hearth.webp", imageAlt: "Coffee",
   } });
+  await db.category.upsert({where:{slug:'chat-test'},create:{slug:'chat-test',name:'Teste'},update:{}});
+  const category=await db.category.findUniqueOrThrow({where:{slug:'chat-test'}});
+  await db.product.update({where:{id:productId},data:{categoryId:category.id}});
+  await db.productVariant.upsert({where:{sku:'CHAT-M'},create:{productId,sku:'CHAT-M',size:'M',color:'Preto',colorHex:'#151515',stock:7},update:{stock:7}});
   mocked.stream.mockReset().mockReturnValue({ finalMessage: mocked.final }); mocked.final.mockReset();
 });
 afterAll(async () => {
@@ -46,7 +50,7 @@ describe("private persisted chat", () => {
     expect(cookie).toContain("HttpOnly"); expect(cookie).toContain("SameSite=Strict");
     expect(cookie).not.toContain(conversation.id); expect(cookie).not.toContain(conversation.tokenHash);
     expect((await currentConversation(request("/", cookie, {})))?.id).toBe(conversation.id);
-    expect(await currentConversation(request("/", "ember-oak-chat=forged", {}))).toBeNull();
+    expect(await currentConversation(request("/", "aureo-chat=forged", {}))).toBeNull();
     await db.conversation.update({ where: { id: conversation.id }, data: { expiresAt: new Date(0) } });
     expect(await currentConversation(request("/", cookie, {}))).toBeNull();
   });
@@ -77,7 +81,7 @@ describe("private persisted chat", () => {
     const current = await db.conversation.findUniqueOrThrow({ where: { id: conversation.id } });
     await releaseChatTurn(conversation.id, current.activeRequestId!);
     await db.conversation.update({ where: { id: conversation.id }, data: { messageCount: 20 } });
-    await expect(beginChatTurn(conversation.id, randomUUID(), "More")).rejects.toThrow("20 messages");
+    await expect(beginChatTurn(conversation.id, randomUUID(), "More")).rejects.toThrow("20 mensagens");
     expect(await db.chatMessage.count()).toBe(1);
   });
   it("recovers an abandoned lease without allowing the old request to release a new turn", async () => {
@@ -107,12 +111,12 @@ describe("private persisted chat", () => {
 describe("database tools, prices and handoff", () => {
   it("combines catalog filters against Postgres and excludes unavailable stock", async () => {
     await db.product.update({ where: { id: productId }, data: { roastLevel: "MEDIUM", acidity: "LOW" } });
-    const filters = { query: "DATABASE coffee", type: "COFFEE", roast: "MEDIUM", brew: "ESPRESSO", acidity: "LOW", maxPriceCents: 2735 };
+    const filters = { query: "DATABASE coffee", size:"M",color:"Preto", category:"chat-test", maxPriceCents: 2735 };
     expect((await executeChatTool("search_products", filters, "Coffee preferences")).products?.map(product => product.id)).toEqual([productId]);
-    for (const change of [{ roast: "DARK" }, { brew: "COLD_BREW" }, { acidity: "HIGH" }, { type: "ACCESSORY" }, { maxPriceCents: 2734 }]) {
+    for (const change of [{size:"XGG"},{color:"Azul"},{category:"missing"},{maxPriceCents:2734}]) {
       expect((await executeChatTool("search_products", { ...filters, ...change }, "Coffee preferences")).products).toEqual([]);
     }
-    await db.product.update({ where: { id: productId }, data: { stock: 0 } });
+    await db.productVariant.update({where:{sku:"CHAT-M"},data:{stock:0}});
     expect((await executeChatTool("search_products", filters, "Coffee preferences")).handoff).toBe(true);
   });
   it("blocks the daily provider budget before calling Claude or consuming a conversation turn", async () => {
@@ -132,7 +136,7 @@ describe("database tools, prices and handoff", () => {
     ], usage: { input_tokens: 100, output_tokens: 50 } });
     const { reply } = await answerChat("Tell me about this coffee", [], new AbortController().signal);
     const html = renderToStaticMarkup(createElement(ChatProductCard, { product: reply.products![0], messageId: "test" }));
-    expect(html).toContain("$27.35"); expect(html).not.toContain("$0.01"); expect(reply.text).not.toContain("next-day");
+    expect(html).toContain("27,35"); expect(html).not.toContain("$0.01"); expect(reply.text).not.toContain("next-day");
     await db.product.update({ where: { id: productId }, data: { priceCents: 3100 } });
     const updated = await executeChatTool("get_product", { id: productId }, "Coffee");
     expect(updated.products![0].priceCents).toBe(3100);
@@ -169,7 +173,7 @@ describe("database tools, prices and handoff", () => {
     mocked.final.mockRejectedValue(new Error("Provider unavailable"));
     const { conversation, cookie } = await createConversation();
     const response = await chat(request("/api/chat", cookie, { requestId: randomUUID(), message: "Espresso" }));
-    const text = await response.text(); expect(text).toContain("could not finish");
+    const text = await response.text(); expect(text).toContain("Não foi possível concluir");
     expect(mocked.stream).toHaveBeenCalledTimes(1);
     expect((await db.conversation.findUniqueOrThrow({ where: { id: conversation.id } })).activeRequestId).toBeNull();
   });

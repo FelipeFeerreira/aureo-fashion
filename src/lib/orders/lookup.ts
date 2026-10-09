@@ -6,7 +6,7 @@ import { trackingSchema } from "@/lib/checkout/schema";
 const publicSelect = {
   number: true, status: true, createdAt: true, totalCents: true,
   subtotalCents: true, shippingCents: true, trackingNumber: true,
-  items: { select: { name: true, grind: true, quantity: true, unitPriceCents: true } },
+  items: { select: { name: true, size:true,color:true, grind: true, quantity: true, unitPriceCents: true } },
 } as const;
 
 export async function lookupOrder(input: unknown) {

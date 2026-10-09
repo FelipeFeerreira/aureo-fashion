@@ -117,7 +117,7 @@ export async function getPriceBounds(): Promise<{ min: number; max: number }> {
 /** Loads just what pricing needs for a set of product IDs. */
 export async function getProductsForPricing(ids: string[]) {
   return db.product.findMany({
-    where: { id: { in: [...new Set(ids)] } },
+    where: { id: { in: [...new Set(ids)] }, categoryId: null },
     select: { id: true, slug: true, name: true, type: true, priceCents: true, stock: true, imageUrl: true },
   });
 }

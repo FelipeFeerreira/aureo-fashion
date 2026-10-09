@@ -1,4 +1,5 @@
 import "server-only";
+import {effectivePrice} from "@/lib/fashion/catalog";
 import { createHash, randomBytes } from "node:crypto";
 import type { MessageParam } from "@anthropic-ai/sdk/resources/messages";
 import { db } from "@/lib/db";
@@ -32,7 +33,7 @@ export async function conversationMessages(conversationId: string): Promise<Chat
   });
   return messages.reverse().map((message) => ({
     id: message.id, role: message.role, text: message.content,
-    products: message.recommendations.map((entry) => entry.product),
+    products: message.recommendations.map((entry) => entry.product).filter(p=>!p.archived&&p.categoryId).map(p=>({...p,priceCents:effectivePrice(p),stock:p.variants.reduce((n,v)=>n+v.stock,0)})),
     handoff: ["handoff", "offline", "tool-error", "provider-error", "invalid-model-output"].includes(message.topic ?? ""),
   }));
 }
@@ -40,12 +41,12 @@ export async function conversationMessages(conversationId: string): Promise<Chat
 export async function beginChatTurn(conversationId: string, requestId: string, message: string) {
   return db.$transaction(async (tx) => {
     const duplicate = await tx.chatMessage.findUnique({ where: { conversationId_requestId_role: { conversationId, requestId, role: "USER" } } });
-    if (duplicate) throw new CheckoutError("This message was already received. Reopen the chat to see its reply.");
+    if (duplicate) throw new CheckoutError("Esta mensagem já foi recebida. Reabra a conversa para ver a resposta.");
     const claimed = await tx.conversation.updateMany({ where: {
       id: conversationId, expiresAt: { gt: new Date() }, messageCount: { lt: MAX_CHAT_MESSAGES },
       OR: [{ activeRequestId: null }, { leaseUntil: { lt: new Date() } }],
     }, data: { messageCount: { increment: 1 }, activeRequestId: requestId, leaseUntil: new Date(Date.now() + 60_000) } });
-    if (claimed.count !== 1) throw new CheckoutError("Please wait for the current reply. If you've reached 20 messages, use the FAQ or Talk to a human.", 429);
+    if (claimed.count !== 1) throw new CheckoutError("Aguarde a resposta atual. Ao atingir 20 mensagens, consulte as dúvidas frequentes.", 429);
     const history = await tx.chatMessage.findMany({ where: { conversationId }, orderBy: [{ createdAt: "desc" }, { id: "desc" }], take: CHAT_HISTORY_MESSAGES,
       include: { recommendations: { include: { product: { select: { id: true, name: true } } } } },
     });

@@ -7,14 +7,14 @@ export async function POST(request: Request) {
   try {
     requireSameOrigin(request);
     if (!await consumeLimit(requestLimitKey(request, "order-lookup"), 10)) {
-      return privateJson({ error: "Too many attempts. Please try again in 15 minutes." }, 429);
+      return privateJson({ error: "Muitas tentativas. Aguarde 15 minutos." }, 429);
     }
     const order = await lookupOrder(JSON.parse(await readBody(request)));
-    if (!order) return privateJson({ error: "We could not find an order matching those details." }, 404);
+    if (!order) return privateJson({ error: "Não encontramos um pedido com esses dados." }, 404);
     return privateJson({ order });
   } catch (error) {
     if (error instanceof CheckoutError) return privateJson({ error: error.message }, error.status);
-    if (error instanceof SyntaxError) return privateJson({ error: "Invalid request." }, 400);
-    return privateJson({ error: "Order lookup is temporarily unavailable. Please try again." }, 503);
+    if (error instanceof SyntaxError) return privateJson({ error: "Solicitação inválida." }, 400);
+    return privateJson({ error: "Consulta indisponível. Tente novamente." }, 503);
   }
 }

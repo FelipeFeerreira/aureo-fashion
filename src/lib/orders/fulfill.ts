@@ -34,18 +34,19 @@ export async function processStripeEvent(event: Stripe.Event): Promise<string | 
       if (order.status === "PENDING" || order.status === "EXPIRED") {
         const email = session.customer_details?.email?.trim().toLowerCase();
         if (!email || email.length > 254) throw new Error("The paid session has no valid customer email.");
+        const fashion = order.items.every(item => item.variantId !== null);
         const quantities = new Map<string, number>();
-        for (const item of order.items) quantities.set(item.productId, (quantities.get(item.productId) ?? 0) + item.quantity);
-        // A single sorted lock query avoids deadlocks when two baskets contain the same products.
-        const products = await tx.$queryRaw<{ id: string; stock: number }[]>(Prisma.sql`
-          SELECT "id", "stock" FROM "Product"
-          WHERE "id" IN (${Prisma.join([...quantities.keys()])}) ORDER BY "id" FOR UPDATE`);
-        const available = products.length === quantities.size &&
-          products.every((product) => product.stock >= quantities.get(product.id)!);
-        if (available) {
-          for (const product of products) {
-            await tx.product.update({ where: { id: product.id }, data: { stock: { decrement: quantities.get(product.id)! } } });
-          }
+        for (const item of order.items) {
+          const id = fashion ? item.variantId! : item.productId;
+          quantities.set(id, (quantities.get(id) ?? 0) + item.quantity);
+        }
+        const products = fashion
+          ? await tx.$queryRaw<{id:string;stock:number}[]>(Prisma.sql`SELECT "id", "stock" FROM "ProductVariant" WHERE "id" IN (${Prisma.join([...quantities.keys()])}) ORDER BY "id" FOR UPDATE`)
+          : await tx.$queryRaw<{id:string;stock:number}[]>(Prisma.sql`SELECT "id", "stock" FROM "Product" WHERE "id" IN (${Prisma.join([...quantities.keys()])}) ORDER BY "id" FOR UPDATE`);
+        const available = products.length === quantities.size && products.every(p => p.stock >= quantities.get(p.id)!);
+        if (available) for (const product of products) {
+          if(fashion) await tx.productVariant.update({where:{id:product.id},data:{stock:{decrement:quantities.get(product.id)!}}});
+          else await tx.product.update({where:{id:product.id},data:{stock:{decrement:quantities.get(product.id)!}}});
         }
         // A payment may finish after another buyer takes the last unit. Never create negative stock
         // or claim fulfillment succeeded. Keep the payment visible for manual resolution.

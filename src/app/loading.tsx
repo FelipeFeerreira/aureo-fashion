@@ -1,0 +1,1 @@
+export default function Loading(){return <div className="section" role="status" aria-label="Carregando coleção"><div className="catalog-title"><h1>Um instante.</h1><p>Preparando seus essenciais…</p></div><div className="product-grid">{[0,1,2,3].map(i=><div key={i} style={{aspectRatio:'3/4',background:'#e7e3db'}}/>)}</div></div>;}

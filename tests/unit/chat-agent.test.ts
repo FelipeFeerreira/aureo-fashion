@@ -7,7 +7,7 @@ import { knowledge } from "@/lib/chat/knowledge";
 
 const mocks = vi.hoisted(() => ({ stream: vi.fn(), final: vi.fn(), products: vi.fn(), product: vi.fn(), order: vi.fn() }));
 vi.mock("@anthropic-ai/sdk", () => ({ default: class { messages = { stream: mocks.stream }; } }));
-vi.mock("@/lib/db", () => ({ db: { product: { findMany: mocks.products, findUnique: mocks.product }, order: { findFirst: mocks.order } } }));
+vi.mock("@/lib/db", () => ({ db: { product: { findMany: mocks.products, findFirst: mocks.product }, order: { findFirst: mocks.order } } }));
 const signal = new AbortController().signal;
 function modelTool(name: string, input: unknown, text = "") {
   return { stop_reason: "tool_use", content: [{ type: "text", text }, { type: "tool_use", id: "tool-1", name, input }],
@@ -86,9 +86,9 @@ describe("tools and request validation", () => {
     expect(mocks.products).not.toHaveBeenCalled();
   });
   it("queries real product fields with bounded filters", async () => {
-    mocks.products.mockResolvedValue([{ id: "p1", priceCents: 1900, stock: 4 }]);
-    const reply = await executeChatTool("search_products", { brew: "ESPRESSO", maxPriceCents: 2000 }, "espresso under $20");
-    expect(mocks.products.mock.calls[0][0]).toMatchObject({ take: 3, where: { stock: { gt: 0 }, priceCents: { lte: 2000 }, brewMethods: { has: "ESPRESSO" } } });
+    mocks.products.mockResolvedValue([{ id: "p1", priceCents: 1900, salePriceCents:null, saleStartsAt:null,saleEndsAt:null, variants:[{stock:4}] }]);
+    const reply = await executeChatTool("search_products", { size: "M", maxPriceCents: 2000 }, "espresso under $20");
+    expect(mocks.products.mock.calls[0][0]).toMatchObject({ take: 3, where: { variants:{some:{active:true,stock:{gt:0},size:"M"}}, priceCents: { lte: 2000 } } });
     expect(reply.products?.[0].priceCents).toBe(1900);
   });
   it("requires both order credentials in the current message before querying", async () => {

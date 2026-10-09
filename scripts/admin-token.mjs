@@ -2,8 +2,8 @@ import { randomBytes } from "node:crypto";
 import { readFileSync, writeFileSync } from "node:fs";
 import { parse } from "dotenv";
 
-if (JSON.parse(readFileSync("package.json", "utf8")).name !== "ember-oak-coffee") {
-  throw new Error("Run this command from the Ember & Oak project root.");
+if (JSON.parse(readFileSync("package.json", "utf8")).name !== "aureo-fashion") {
+  throw new Error("Run this command from the AUREO project root.");
 }
 const path = ".env.local";
 const content = readFileSync(path, "utf8");
