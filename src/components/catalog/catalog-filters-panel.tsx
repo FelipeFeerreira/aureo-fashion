@@ -26,7 +26,7 @@ export function CatalogFiltersPanel({ filters: serverFilters, priceBounds, activ
   return (
     <div className="space-y-8" aria-busy={pending}>
       <fieldset>
-        <legend className="mb-3 text-sm font-semibold text-espresso">Category</legend>
+        <legend className="mb-3 text-sm font-semibold text-foreground">Category</legend>
         <div className="flex flex-wrap gap-2">
           {[undefined, ...PRODUCT_TYPES].map((type) => {
             const selected = filters.type === type;
@@ -39,8 +39,8 @@ export function CatalogFiltersPanel({ filters: serverFilters, priceBounds, activ
                 className={cn(
                   "rounded-full border px-3.5 py-1.5 text-sm transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none",
                   selected
-                    ? "border-espresso bg-espresso text-cream"
-                    : "border-border bg-card text-espresso hover:border-oak",
+                    ? "border-foreground bg-primary text-primary-foreground"
+                    : "border-border bg-card text-foreground hover:border-muted-foreground",
                 )}
               >
                 {type ? typeLabels[type] : "All"}
@@ -51,7 +51,7 @@ export function CatalogFiltersPanel({ filters: serverFilters, priceBounds, activ
       </fieldset>
 
       <fieldset>
-        <legend className="mb-3 text-sm font-semibold text-espresso">Roast level</legend>
+        <legend className="mb-3 text-sm font-semibold text-foreground">Roast level</legend>
         <div className="space-y-1">
           {ROAST_LEVELS.map((level) => (
             <CheckboxRow
@@ -66,7 +66,7 @@ export function CatalogFiltersPanel({ filters: serverFilters, priceBounds, activ
       </fieldset>
 
       <fieldset>
-        <legend className="mb-3 text-sm font-semibold text-espresso">Brew method</legend>
+        <legend className="mb-3 text-sm font-semibold text-foreground">Brew method</legend>
         <div className="space-y-1">
           {BREW_METHODS.map((method) => (
             <CheckboxRow
@@ -134,9 +134,9 @@ function CheckboxRow({
         type="checkbox"
         checked={checked}
         onChange={(event) => onChange(event.target.checked)}
-        className="size-5 rounded border-input accent-ember focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none"
+        className="size-5 rounded border-input accent-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none"
       />
-      <label htmlFor={id} className="flex-1 cursor-pointer text-sm text-espresso">
+      <label htmlFor={id} className="flex-1 cursor-pointer text-sm text-foreground">
         {label}
       </label>
     </div>
@@ -157,7 +157,7 @@ function PriceRange({
 
   return (
     <fieldset>
-      <legend id={labelId} className="mb-1 text-sm font-semibold text-espresso">
+      <legend id={labelId} className="mb-1 text-sm font-semibold text-foreground">
         Price range
       </legend>
       <p className="mb-4 text-sm text-muted-foreground" aria-live="polite">

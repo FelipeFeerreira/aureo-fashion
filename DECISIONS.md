@@ -553,3 +553,8 @@ demo with real test-flow data and separately approved live AI calls. Authenticat
 a POST body and an ephemeral session, with no token URL, trace, login capture or saved
 cookies. Sharp creates small WebP documentation images and a 1600 × 1200 cover from the
 screenshots; high-quality originals stay outside Git.
+
+
+## T Knights Mark editorial redesign — 2026-10-10
+
+See [TKM-REDESIGN.md](docs/TKM-REDESIGN.md) for the additive settings migration, semantic dark theme, self-hosted fonts, media provenance and preserved commerce boundaries. Collections are structured editorial settings with validated existing product IDs, not invented inventory.

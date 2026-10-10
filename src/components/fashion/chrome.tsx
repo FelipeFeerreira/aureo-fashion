@@ -1,4 +1,7 @@
 "use client";
+import Image from "next/image";
+import { Emblem } from "./brand";
+import type { Editorial } from "@/lib/fashion/editorial";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -13,7 +16,12 @@ export function Chrome({
   categories,
 }: {
   children: React.ReactNode;
-  settings: { name: string; slogan: string; announcement: string };
+  settings: {
+    name: string;
+    slogan: string;
+    announcement: string;
+    editorial: Editorial;
+  };
   categories: { slug: string; name: string }[];
 }) {
   const path = usePathname(),
@@ -36,17 +44,33 @@ export function Chrome({
           <Menu size={21} />
         </button>
         <Link className="wordmark" href="/">
-          {s.name}
-          <small>ESTÚDIO DE ESSENCIAIS</small>
+          {s.editorial.logo ? (
+            <Image
+              src={s.editorial.logo}
+              alt={s.name}
+              width={180}
+              height={48}
+              className="custom-logo"
+            />
+          ) : (
+            <>
+              <Emblem monogram={s.editorial.monogram} />
+              <span>
+                {s.name}
+                <small>HERANÇA & IDENTIDADE</small>
+              </span>
+            </>
+          )}
         </Link>
         <nav className="desktop-nav">
-          <Link href="/shop">Todas as peças</Link>
-          {categories.slice(0, 3).map((c) => (
+          <Link href="/#collections">Coleções</Link>
+          {categories.slice(0, 2).map((c) => (
             <Link key={c.slug} href={`/shop?category=${c.slug}`}>
               {c.name}
             </Link>
           ))}
-          <Link href="/about">Universo {s.name}</Link>
+          <Link href="/shop?sort=newest">Novidades</Link>
+          <Link href="/about">A marca</Link>
         </nav>
         <div className="header-actions">
           <Link className="icon" href="/shop#search" aria-label="Buscar">
@@ -71,19 +95,20 @@ export function Chrome({
         <div className="footer-top">
           <div>
             <Link className="wordmark" href="/">
-              {s.name}
+              <Emblem monogram={s.editorial.monogram} />
+              <span>{s.name}</span>
             </Link>
             <p>
               {s.slogan}
               <br />
-              Feito para fazer parte.
+              {s.editorial.footerText}
             </p>
           </div>
           <div>
             <h3>Explore</h3>
             <Link href="/shop">Todas as peças</Link>
-            <Link href="/shop?collection=Essentials">Essentials</Link>
-            <Link href="/about">Nossa essência</Link>
+            <Link href="/#collections">Coleções</Link>
+            <Link href="/about">Nossa história</Link>
           </div>
           <div>
             <h3>Podemos ajudar?</h3>
@@ -124,8 +149,14 @@ export function Chrome({
                 {c.name}
               </Link>
             ))}
+            <Link href="/#collections" onClick={() => setMenu(false)}>
+              Coleções
+            </Link>
+            <Link href="/shop?sort=newest" onClick={() => setMenu(false)}>
+              Novidades
+            </Link>
             <Link href="/about" onClick={() => setMenu(false)}>
-              Nossa essência
+              Nossa história
             </Link>
           </nav>
         </SheetContent>

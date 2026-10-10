@@ -18,7 +18,7 @@ export function MobileNav() {
           <Menu className="size-5" aria-hidden="true" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="w-72 bg-cream">
+      <SheetContent side="left" className="w-72 bg-background">
         <SheetHeader>
           <SheetTitle>
             <Logo />
@@ -30,7 +30,7 @@ export function MobileNav() {
               key={link.href}
               href={link.href}
               onClick={() => setOpen(false)}
-              className="border-b border-border py-3.5 font-heading text-xl text-espresso"
+              className="border-b border-border py-3.5 font-heading text-xl text-foreground"
             >
               {link.label}
             </Link>
@@ -38,7 +38,7 @@ export function MobileNav() {
           <Link
             href="/cart"
             onClick={() => setOpen(false)}
-            className="py-3.5 font-heading text-xl text-espresso"
+            className="py-3.5 font-heading text-xl text-foreground"
           >
             Cart
           </Link>

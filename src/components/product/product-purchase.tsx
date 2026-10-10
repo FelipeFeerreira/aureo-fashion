@@ -19,14 +19,14 @@ export function ProductPurchase({ product, grindable }: Props) {
     <div className="space-y-5">
       {grindable && (
         <div className="space-y-2">
-          <label htmlFor={grindId} className="block text-sm font-semibold text-espresso">
+          <label htmlFor={grindId} className="block text-sm font-semibold text-foreground">
             Grind
           </label>
           <select
             id={grindId}
             value={grind}
             onChange={(event) => setGrind(event.target.value as Grind)}
-            className="h-11 w-full rounded-lg border border-input bg-card px-3 text-espresso focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+            className="h-11 w-full rounded-lg border border-input bg-card px-3 text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
           >
             {GRIND_OPTIONS.map((option) => (
               <option key={option} value={option}>
@@ -40,7 +40,7 @@ export function ProductPurchase({ product, grindable }: Props) {
 
       <div className="flex flex-wrap items-end gap-3">
         <div className="space-y-2">
-          <label htmlFor={quantityId} className="block text-sm font-semibold text-espresso">
+          <label htmlFor={quantityId} className="block text-sm font-semibold text-foreground">
             Quantity
           </label>
           <div className="flex h-12 items-center rounded-lg border border-input bg-card">
@@ -65,7 +65,7 @@ export function ProductPurchase({ product, grindable }: Props) {
                 const next = Number(event.target.value);
                 if (Number.isFinite(next)) setQuantity(Math.min(max, Math.max(1, Math.floor(next))));
               }}
-              className="w-12 [appearance:textfield] bg-transparent text-center font-medium text-espresso focus-visible:outline-none [&::-webkit-inner-spin-button]:appearance-none"
+              className="w-12 [appearance:textfield] bg-transparent text-center font-medium text-foreground focus-visible:outline-none [&::-webkit-inner-spin-button]:appearance-none"
             />
             <Button
               type="button"

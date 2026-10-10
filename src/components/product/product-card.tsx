@@ -13,7 +13,7 @@ export function ProductCard({ product, priority = false }: { product: ProductSum
 
   return (
     <article className="group flex w-full flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-[0_1px_2px_rgb(42_27_18/0.04)] transition-shadow hover:shadow-[0_12px_32px_-12px_rgb(42_27_18/0.25)]">
-      <Link href={href} tabIndex={-1} aria-hidden="true" className="relative block aspect-square overflow-hidden bg-latte">
+      <Link href={href} tabIndex={-1} aria-hidden="true" className="relative block aspect-square overflow-hidden bg-secondary">
         <Image
           src={product.imageUrl}
           alt=""
@@ -23,11 +23,11 @@ export function ProductCard({ product, priority = false }: { product: ProductSum
           className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
         />
         {product.stock <= 0 ? (
-          <span className="absolute top-3 left-3 rounded-full bg-espresso px-2.5 py-1 text-xs font-semibold text-cream">
+          <span className="absolute top-3 left-3 rounded-full bg-primary px-2.5 py-1 text-xs font-semibold text-primary-foreground">
             Sold out
           </span>
         ) : lowStock ? (
-          <span className="absolute top-3 left-3 rounded-full bg-ember px-2.5 py-1 text-xs font-semibold text-ember-foreground">
+          <span className="absolute top-3 left-3 rounded-full bg-primary px-2.5 py-1 text-xs font-semibold text-primary-foreground">
             Only {product.stock} left
           </span>
         ) : null}
@@ -37,8 +37,8 @@ export function ProductCard({ product, priority = false }: { product: ProductSum
         <div className="flex items-center justify-between gap-2 text-xs font-medium tracking-wide text-muted-foreground uppercase">
           <span>{product.type === "COFFEE" ? (product.origin ?? "Coffee") : typeLabels[product.type]}</span>
         </div>
-        <h3 className="font-heading text-xl leading-snug text-espresso">
-          <Link href={href} className="hover:text-ember">
+        <h3 className="font-heading text-xl leading-snug text-foreground">
+          <Link href={href} className="hover:text-primary">
             {product.name}
           </Link>
         </h3>
@@ -47,7 +47,7 @@ export function ProductCard({ product, priority = false }: { product: ProductSum
           <p className="text-sm text-muted-foreground">{product.tastingNotes.join(" · ")}</p>
         )}
         <div className="mt-auto flex items-center justify-between gap-3 pt-2">
-          <p className="text-lg font-semibold text-espresso">
+          <p className="text-lg font-semibold text-foreground">
             <span className="sr-only">Price: </span>
             {formatPrice(product.priceCents)}
           </p>

@@ -20,18 +20,18 @@ export function OrderDetails({ order }: { order: OrderDisplay }) {
   const Icon = paid ? CheckCircle2 : Clock3;
   return <section className="rounded-3xl border border-border bg-card p-6 sm:p-8" aria-label="Detalhes do pedido">
     <div className="flex items-start gap-4">
-      <Icon className="mt-1 size-8 shrink-0 text-ember" aria-hidden="true" />
+      <Icon className="mt-1 size-8 shrink-0 text-primary" aria-hidden="true" />
       <div><p className="text-xs font-semibold tracking-widest text-muted-foreground uppercase">{order.number}</p>
         <h2 className="mt-2 text-3xl font-semibold">{title}</h2>
         <p className="mt-3 max-w-lg text-sm leading-relaxed text-muted-foreground">{description}</p>
       </div>
     </div>
-    <p className="mt-6 rounded-xl bg-latte p-4 text-sm">Loja demonstrativa. Nenhum pedido real será enviado.</p>
+    <p className="mt-6 rounded-xl bg-secondary p-4 text-sm">Loja demonstrativa. Nenhum pedido real será enviado.</p>
     {paid && <ol className="my-7 grid grid-cols-3 gap-3 text-center text-xs" aria-label="Andamento do pedido">
       {[{ icon: CheckCircle2, label: "Confirmado", done: true },
         { icon: Package, label: "Enviado", done: ["SHIPPED", "DELIVERED"].includes(order.status) },
         { icon: Truck, label: "Entregue", done: order.status === "DELIVERED" }].map((step) =>
-        <li key={step.label} className={step.done ? "font-semibold text-ember" : "text-muted-foreground"}>
+        <li key={step.label} className={step.done ? "font-semibold text-primary" : "text-muted-foreground"}>
           <step.icon className="mx-auto mb-2 size-6" aria-hidden="true" />{step.label}{step.done ? " ✓" : ""}
         </li>)}
     </ol>}

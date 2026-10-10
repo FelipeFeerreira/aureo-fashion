@@ -1,171 +1,175 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
-import { settings, catalog, categories } from "@/lib/fashion/catalog";
+import { ArrowUpRight } from "lucide-react";
+import { settings, fashionInclude } from "@/lib/fashion/catalog";
+import { db } from "@/lib/db";
 import { productView } from "@/lib/fashion/view";
 import { ProductCard } from "@/components/fashion/product";
 import { Newsletter } from "@/components/fashion/shopping";
+import { Emblem } from "@/components/fashion/brand";
 export default async function Home() {
-  const [s, { products }, cats] = await Promise.all([
-    settings(),
-    catalog(),
-    categories(),
-  ]);
+  const s = await settings(),
+    e = s.editorial;
+  const selected = await db.product.findMany({
+    where: { archived: false, categoryId: { not: null }, featured: true },
+    include: fashionInclude,
+    orderBy: [{ popularity: "desc" }, { sortOrder: "asc" }],
+    take: 4,
+  });
+  const arrivals = await db.product.findMany({
+    where: {
+      archived: false,
+      categoryId: { not: null },
+      id: { notIn: selected.map((p) => p.id) },
+    },
+    include: fashionInclude,
+    orderBy: { createdAt: "desc" },
+    take: 4,
+  });
   return (
     <>
       <section className="hero">
         <Image
           src={s.heroImage}
-          alt="Editorial de moda — fotografia de inspiração ilustrativa"
+          alt="Editorial da marca — referência visual, sem vínculo com o estoque demonstrativo"
           fill
           priority
           fetchPriority="high"
           sizes="100vw"
+          style={{ objectPosition: e.heroPosition }}
         />
         <div className="hero-shade" />
         <div className="hero-top">
-          {s.name} JOURNAL <span>VOL. 01 / ESSENCIAIS</span>
+          <span>{s.name} / ESTÚDIO BRASIL</span>
+          <span>EXPRESSÃO CONTEMPORÂNEA</span>
         </div>
         <div className="hero-copy">
-          <span className="eyebrow">PARA TODOS OS SEUS DIAS</span>
+          <span className="eyebrow">{e.heroLabel}</span>
           <h1>{s.heroTitle}</h1>
+          <p>{e.heroDescription}</p>
           <Link className="button light" href="/shop">
-            Explore a coleção <ArrowUpRight size={20} />
+            Explorar coleção <ArrowUpRight size={20} />
           </Link>
         </div>
         <div className="hero-bottom">
-          <span>Formas simples. Possibilidades infinitas.</span>
-          <span>01 — 03</span>
+          <span>HERANÇA. FORÇA. IDENTIDADE.</span>
+          <span>IMAGEM EDITORIAL · I</span>
         </div>
       </section>
       <div className="manifesto-line">
-        <span>DESENHO COM INTENÇÃO</span>
-        <span>CONFORTO SEM EXCESSO</span>
-        <span>ESSENCIAIS COM IDENTIDADE</span>
+        <span>HERANÇA MEDIEVAL</span>
+        <span>ESPÍRITO CONTEMPORÂNEO</span>
+        <span>IDENTIDADE SEM CONCESSÕES</span>
       </div>
-      <section className="section">
+      <section className="section" id="collections">
         <div className="section-heading">
           <div>
-            <span className="eyebrow">A SUA PRÓXIMA PEÇA FAVORITA</span>
-            <h2>Essenciais, nada básicos.</h2>
+            <span className="eyebrow">I / UNIVERSOS DA MARCA</span>
+            <h2>Uma marca. Muitas histórias.</h2>
           </div>
-          <Link href="/shop?collection=Essentials">
-            Ver a coleção <ArrowUpRight size={17} />
-          </Link>
+          <span className="muted">Conceitos editoriais</span>
         </div>
-        <div className="product-grid">
-          {products.slice(0, 4).map((p) => (
-            <ProductCard product={productView(p)} key={p.id} />
-          ))}
-        </div>
-      </section>
-      <section className="story-strip">
-        <span className="eyebrow">A ESSÊNCIA {s.name}</span>
-        <h2>
-          Vestir menos tendências.
-          <br />
-          Vestir mais de você.
-        </h2>
-        <p>
-          Acreditamos na força do simples. Em peças que abrem espaço para a sua
-          personalidade. Em um guarda-roupa que faz sentido, todos os dias.
-        </p>
-        <Link className="text-link" href="/about">
-          Conheça nosso universo <ArrowRight size={17} />
-        </Link>
-      </section>
-      <section className="section">
-        <div className="section-heading">
-          <div>
-            <span className="eyebrow">ENCONTRE SEU RITMO</span>
-            <h2>Um essencial para cada momento.</h2>
-          </div>
-        </div>
-        <div className="category-grid">
-          {cats.slice(0, 3).map((c, i) => (
-            <Link href={`/shop?category=${c.slug}`} key={c.id}>
+        <div className="collection-grid">
+          {e.collections.map((c, i) => (
+            <Link
+              className="collection-tile"
+              href={`/collections/${c.slug}`}
+              key={c.slug}
+            >
               <Image
-                src={c.imageUrl}
-                alt={`Referência de ${c.name}`}
+                src={c.image}
+                alt={`Referência editorial — ${c.title}`}
                 fill
-                sizes="(max-width: 760px) 68vw, 30vw"
+                sizes="(max-width: 760px) 90vw, 45vw"
               />
-              <div>
-                <span>0{i + 1}</span>
-                <h3>{c.name}</h3>
-                <ArrowUpRight />
+              <div className="collection-overlay" />
+              <div className="collection-copy">
+                <span className="eyebrow">
+                  {["I", "II", "III", "IV", "V", "VI", "VII", "VIII"][i]} /
+                  CONCEITO EDITORIAL
+                </span>
+                <h3>{c.title}</h3>
+                <p>{c.description}</p>
+                <span className="text-link">
+                  Conheça o universo <ArrowUpRight size={16} />
+                </span>
               </div>
             </Link>
           ))}
         </div>
       </section>
+      {selected.length > 0 && (
+        <section className="section selection">
+          <div className="section-heading">
+            <div>
+              <span className="eyebrow">II / SELEÇÃO DA MARCA</span>
+              <h2>Peças com presença.</h2>
+            </div>
+            <Link href="/shop">
+              Ver todas as peças <ArrowUpRight size={17} />
+            </Link>
+          </div>
+          <div className="product-grid">
+            {selected.map((p) => (
+              <ProductCard key={p.id} product={productView(p)} />
+            ))}
+          </div>
+        </section>
+      )}
+      <section className="story-strip">
+        <Emblem monogram={e.monogram} />
+        <span className="eyebrow">O MANIFESTO / {s.name}</span>
+        <h2>{e.manifestoTitle}</h2>
+        <p>{e.manifestoText}</p>
+        <Link className="text-link" href="/about">
+          Conheça nossa história <ArrowUpRight size={17} />
+        </Link>
+      </section>
       <section className="campaign">
         <div className="campaign-photo">
           <Image
-            src="/images/campaign.jpg"
-            alt="Inspiração de guarda-roupa contemporâneo"
+            src={e.campaignImage}
+            alt="Campanha editorial da marca, apresentada como referência visual"
             fill
-            sizes="(max-width: 700px) 100vw, 50vw"
+            sizes="(max-width: 760px) 100vw, 55vw"
           />
         </div>
         <div className="campaign-copy">
-          <span className="eyebrow">BEM-VINDO AO SEU COTIDIANO</span>
-          <h2>
-            Presença.
-            <br />
-            Sem esforço.
-          </h2>
-          <p>
-            Texturas que convidam ao toque. Silhuetas que deixam você à vontade.
-            Um novo olhar para aquilo que você veste sempre.
-          </p>
-          <Link className="button" href="/shop?sort=newest">
-            Descubra as novidades <ArrowUpRight size={18} />
+          <span className="eyebrow">III / A ASSINATURA</span>
+          <h2>{e.campaignTitle}</h2>
+          <p>{e.campaignText}</p>
+          <Link className="text-link" href="/shop">
+            Explore as peças <ArrowUpRight size={18} />
           </Link>
         </div>
       </section>
-      <section className="section">
-        <div className="section-heading">
-          <div>
-            <span className="eyebrow">ACABARAM DE CHEGAR</span>
-            <h2>Novos encontros.</h2>
+      {arrivals.length > 0 && (
+        <section className="section">
+          <div className="section-heading">
+            <div>
+              <span className="eyebrow">IV / NOVOS CAPÍTULOS</span>
+              <h2>Novas presenças.</h2>
+            </div>
+            <Link href="/shop?sort=newest">
+              Ver novidades <ArrowUpRight size={17} />
+            </Link>
           </div>
-          <Link href="/shop?sort=newest">
-            Ver novidades <ArrowUpRight size={17} />
-          </Link>
-        </div>
-        <div className="product-grid">
-          {products.slice(4, 8).map((p) => (
-            <ProductCard key={p.id} product={productView(p)} />
-          ))}
-        </div>
-      </section>
+          <div className="product-grid">
+            {arrivals.map((p) => (
+              <ProductCard key={p.id} product={productView(p)} />
+            ))}
+          </div>
+        </section>
+      )}
       <section className="feature-band">
-        <span>01 / O DETALHE FAZ A DIFERENÇA</span>
-        <h2>O essencial é sentir-se bem.</h2>
-        <p>
-          Explore modelagens, composição e medidas em cada peça. Escolhas
-          conscientes começam com informação.
-        </p>
-        <Link href="/shop?sort=popular">
-          Explore os destaques <ArrowRight size={18} />
+        <span>O VALOR DO DETALHE</span>
+        <h2>{e.detailTitle}</h2>
+        <p>{e.detailText}</p>
+        <Link href="/shop">
+          Conheça cada peça <ArrowUpRight size={18} />
         </Link>
       </section>
-      <section className="section">
-        <div className="section-heading">
-          <div>
-            <span className="eyebrow">SELEÇÃO EDITORIAL · DEMONSTRAÇÃO</span>
-            <h2>Os favoritos do cotidiano.</h2>
-          </div>
-          <Link href="/shop?sort=popular">Explorar destaques ↗</Link>
-        </div>
-        <div className="product-grid">
-          {products.slice(0, 4).map((p) => (
-            <ProductCard key={p.id} product={productView(p)} />
-          ))}
-        </div>
-      </section>
-      <Newsletter />
+      <Newsletter title={e.newsletterTitle} description={e.newsletterText} />
     </>
   );
 }

@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { settings } from "@/lib/fashion/catalog";
 import { db } from "@/lib/db";
 export const dynamic = "force-dynamic";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -7,7 +8,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     where: { archived: false, categoryId: { not: null } },
     select: { slug: true, updatedAt: true },
   });
+  const s = await settings();
   return [
+    ...s.editorial.collections.map((c) => ({
+      url: `${base}/collections/${c.slug}`,
+    })),
     { url: base },
     { url: base + "/shop" },
     { url: base + "/about" },

@@ -69,3 +69,47 @@ test("owner edits product and persists image ordering with keyboard controls", a
     ).toBeVisible();
   }
 });
+
+test("owner updates editorial content and it survives a reload", async ({
+  page,
+  isMobile,
+}) => {
+  test.skip(isMobile, "Settings mutation is exercised once.");
+  const token = process.env.ADMIN_TOKEN;
+  test.skip(!token, "Configure local owner token.");
+  await page.goto("/admin");
+  await page.getByLabel("Chave de acesso").fill(token!);
+  await page.getByRole("button", { name: "Abrir painel" }).click();
+  await page
+    .getByRole("button", { name: "Marca e conteúdo", exact: true })
+    .click();
+  const description = page.getByRole("textbox", {
+    name: "Descrição principal",
+    exact: true,
+  });
+  const original = await description.inputValue();
+  try {
+    await description.fill("Uma nova história, escrita por você.");
+    await page
+      .getByRole("button", { name: "Salvar identidade e conteúdo" })
+      .click();
+    await expect(
+      page.getByText("Configurações salvas.", { exact: true }),
+    ).toBeVisible();
+    await page.reload();
+    await page
+      .getByRole("button", { name: "Marca e conteúdo", exact: true })
+      .click();
+    await expect(description).toHaveValue(
+      "Uma nova história, escrita por você.",
+    );
+  } finally {
+    await description.fill(original);
+    await page
+      .getByRole("button", { name: "Salvar identidade e conteúdo" })
+      .click();
+    await expect(
+      page.getByText("Configurações salvas.", { exact: true }),
+    ).toBeVisible();
+  }
+});

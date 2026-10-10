@@ -77,6 +77,14 @@ export function Favorite({ id }: { id: string }) {
   );
 }
 export function ProductCard({ product: p }: { product: ProductView }) {
+  const available = p.variants.some((v) => v.stock > 0);
+  const colors = [...new Map(p.variants.map((v) => [v.color, v])).values()];
+  const secondary = p.images.find(
+    (image, index) =>
+      index > 0 &&
+      image.url !== p.images[0]?.url &&
+      image.color === p.images[0]?.color,
+  );
   return (
     <article className="product-card">
       <div className="product-photo">
@@ -87,28 +95,49 @@ export function ProductCard({ product: p }: { product: ProductView }) {
             fill
             sizes="(max-width: 760px) 44vw, 23vw"
           />
+          {secondary && (
+            <Image
+              className="secondary-photo"
+              src={secondary.url}
+              alt={secondary.alt}
+              fill
+              sizes="(max-width: 760px) 44vw, 23vw"
+            />
+          )}
         </Link>
         <span className="product-label">
-          {p.original > p.price
-            ? "SELEÇÃO ESPECIAL"
-            : p.collection.toUpperCase()}
+          {!available
+            ? "INDISPONÍVEL"
+            : p.sample
+              ? "DEMONSTRAÇÃO"
+              : p.original > p.price
+                ? "SELEÇÃO ESPECIAL"
+                : p.collection.toUpperCase()}
         </span>
         <Favorite id={p.id} />
         <Link className="quick-link" href={`/shop/${p.slug}`}>
-          Escolher tamanho <Plus size={16} />
+          {available ? "Escolher tamanho" : "Ver peça"} <Plus size={16} />
         </Link>
       </div>
       <div className="product-caption">
         <Link href={`/shop/${p.slug}`}>
           <h3>{p.name}</h3>
-          <p>
-            {p.variants[0]?.color} · {p.category}
-          </p>
+          <p>{p.category}</p>
         </Link>
         <span>
           {formatMoney(p.price)}
           {p.original > p.price && <del>{formatMoney(p.original)}</del>}
         </span>
+      </div>
+      <div className="card-colors" aria-label="Cores da peça">
+        {colors.map((v) => (
+          <span
+            key={v.color}
+            title={v.color}
+            aria-label={v.color}
+            style={{ backgroundColor: v.colorHex }}
+          />
+        ))}
       </div>
     </article>
   );
@@ -147,6 +176,29 @@ export function ProductDetail({ product: p }: { product: ProductView }) {
             />
             <span>Ampliar ↗</span>
           </button>
+          {images.length > 1 && (
+            <div className="gallery-controls">
+              <button
+                type="button"
+                aria-label="Imagem anterior"
+                onClick={() =>
+                  setIndex((index - 1 + images.length) % images.length)
+                }
+              >
+                ←
+              </button>
+              <span aria-live="polite">
+                {index + 1} / {images.length}
+              </span>
+              <button
+                type="button"
+                aria-label="Próxima imagem"
+                onClick={() => setIndex((index + 1) % images.length)}
+              >
+                →
+              </button>
+            </div>
+          )}
           <div className="thumbnails">
             {images.map((img, i) => (
               <button

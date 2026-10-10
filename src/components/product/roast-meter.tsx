@@ -11,8 +11,8 @@ export function RoastMeter({ level, className }: { level: RoastLevel; className?
           <span
             key={step}
             className={cn(
-              "size-2.5 rounded-full border border-oak/50",
-              step <= value ? (step >= 3 ? "bg-espresso" : "bg-oak") : "bg-transparent",
+              "size-2.5 rounded-full border border-muted-foreground/50",
+              step <= value ? (step >= 3 ? "bg-primary" : "bg-muted-foreground") : "bg-transparent",
             )}
           />
         ))}

@@ -51,7 +51,7 @@ export function CartView() {
               <li key={key} className="flex gap-4 p-4 sm:gap-6 sm:p-6" data-testid="cart-line">
                 <Link
                   href={`/shop/${item.slug}`}
-                  className="relative size-24 shrink-0 overflow-hidden rounded-xl bg-latte sm:size-28"
+                  className="relative size-24 shrink-0 overflow-hidden rounded-xl bg-secondary sm:size-28"
                   tabIndex={-1}
                   aria-hidden="true"
                 >
@@ -61,13 +61,13 @@ export function CartView() {
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <h3 className="font-heading text-lg leading-snug">
-                        <Link href={`/shop/${item.slug}`} className="hover:text-ember">
+                        <Link href={`/shop/${item.slug}`} className="hover:text-primary">
                           {item.name}
                         </Link>
                       </h3>
                       {item.grind && <p className="text-sm text-muted-foreground">{grindLabels[item.grind]}</p>}
                     </div>
-                    <div className="text-right font-semibold text-espresso">
+                    <div className="text-right font-semibold text-foreground">
                       {line ? formatPrice(line.lineTotalCents) : <Skeleton className="h-5 w-16" />}
                     </div>
                   </div>
@@ -100,7 +100,7 @@ export function CartView() {
             );
           })}
         </ul>
-        <Link href="/shop" className="mt-6 inline-block text-sm font-medium text-espresso hover:text-ember">
+        <Link href="/shop" className="mt-6 inline-block text-sm font-medium text-foreground hover:text-primary">
           ← Continue shopping
         </Link>
       </section>
@@ -116,7 +116,7 @@ function LineIssue({ line }: { line: QuoteLine }) {
   }
   if (line.issue === "QUANTITY_REDUCED") {
     return (
-      <p className="text-sm font-medium text-ember">
+      <p className="text-sm font-medium text-primary">
         Only {line.maxQuantity} available — we&apos;ve adjusted your quantity.
       </p>
     );
@@ -171,8 +171,8 @@ function OrderSummary({ quote, loading, error }: { quote: CartQuote | null; load
       </h2>
 
       {quote && (
-        <div className="mt-5 rounded-xl bg-latte/70 p-4">
-          <p className="text-sm text-espresso">
+        <div className="mt-5 rounded-xl bg-secondary/70 p-4">
+          <p className="text-sm text-foreground">
             {quote.freeShippingRemainingCents > 0 ? (
               <>
                 You&apos;re <strong>{formatPrice(quote.freeShippingRemainingCents)}</strong> away from free shipping.
@@ -182,14 +182,14 @@ function OrderSummary({ quote, loading, error }: { quote: CartQuote | null; load
             )}
           </p>
           <div
-            className="mt-3 h-2 overflow-hidden rounded-full bg-cream"
+            className="mt-3 h-2 overflow-hidden rounded-full bg-background"
             role="progressbar"
             aria-label="Progress toward free shipping"
             aria-valuenow={Math.round(progress)}
             aria-valuemin={0}
             aria-valuemax={100}
           >
-            <div className="h-full rounded-full bg-ember transition-all" style={{ width: `${progress}%` }} />
+            <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${progress}%` }} />
           </div>
         </div>
       )}
@@ -237,7 +237,7 @@ function SummaryRow({
   return (
     <div className="flex items-center justify-between">
       <dt className="text-muted-foreground">{label}</dt>
-      <dd className="font-medium text-espresso">{value === undefined ? <Skeleton className="h-4 w-14" /> : format(value)}</dd>
+      <dd className="font-medium text-foreground">{value === undefined ? <Skeleton className="h-4 w-14" /> : format(value)}</dd>
     </div>
   );
 }

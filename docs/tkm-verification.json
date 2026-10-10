@@ -1,0 +1,23 @@
+{
+  "verifiedAt": "2026-10-10T10:02:01.602938+00:00",
+  "brand": "T KNIGHTS MARK",
+  "unitTests": 66,
+  "integrationTests": 64,
+  "browserTestsPassed": 10,
+  "browserTestsSkipped": 2,
+  "skipReason": "Owner mutations run once on desktop to avoid concurrent fixture changes.",
+  "checks": {
+    "typescript": "passed",
+    "eslint": "passed",
+    "productionBuild": "passed",
+    "gitDiffCheck": "passed"
+  },
+  "screenshots": "docs/screenshots/tkm: desktop/mobile homepage and product",
+  "preserved": "Variant inventory, trusted server pricing, authentication, signed test checkout, Cloudinary media validation, consent and order data.",
+  "limitations": [
+    "No live external credentials used",
+    "Editorial references are not verified merchandise",
+    "No new Lighthouse benchmark",
+    "No production deployment performed"
+  ]
+}

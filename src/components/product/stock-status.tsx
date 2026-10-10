@@ -7,7 +7,7 @@ export function StockStatus({ stock, className }: { stock: number; className?: s
     return <p className={cn("text-sm font-medium text-destructive", className)}>Sold out</p>;
   }
   if (stock <= LOW_STOCK_THRESHOLD) {
-    return <p className={cn("text-sm font-medium text-ember", className)}>Only {stock} left — small lot</p>;
+    return <p className={cn("text-sm font-medium text-primary", className)}>Only {stock} left — small lot</p>;
   }
   return <p className={cn("text-sm text-muted-foreground", className)}>In stock, roasted to order</p>;
 }

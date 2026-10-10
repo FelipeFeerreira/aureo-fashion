@@ -22,14 +22,15 @@ export default async function Shop({ searchParams }: PageProps<"/shop">) {
   return (
     <div className="section catalog">
       <div className="catalog-title">
-        <span className="eyebrow">UM GUARDA-ROUPA COM INTENÇÃO</span>
+        <span className="eyebrow">O CATÁLOGO / IDENTIDADE EM CADA PEÇA</span>
         <h1>
           {cats.find((c) => c.slug === val("category"))?.name ??
             "Todas as peças"}
         </h1>
-        <p>Encontre o essencial. Faça dele seu.</p>
+        <p>Escolha sua forma de carregar o legado.</p>
       </div>
       <form className="filters" action="/shop">
+        {val("collection") && <input type="hidden" name="collection" value={val("collection")}/> }
         <label className="search-field">
           Buscar
           <input

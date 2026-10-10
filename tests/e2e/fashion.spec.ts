@@ -4,9 +4,9 @@ test("editorial navigation, URL filters, variant inventory, persistent bag and w
 }) => {
   await page.goto("/");
   await expect(
-    page.getByRole("heading", { name: "Menos excesso. Mais essência." }),
+    page.getByRole("heading", { name: "CARREGUE SEU LEGADO." }),
   ).toBeVisible();
-  await page.getByRole("link", { name: "Explore a coleção" }).click();
+  await page.getByRole("link", { name: "Explorar coleção" }).click();
   await expect(page).toHaveURL(/\/shop/);
   await page.getByLabel("Tamanho", { exact: true }).selectOption("M");
   await page.getByRole("button", { name: "Filtrar", exact: true }).click();
@@ -100,4 +100,35 @@ test("rejects missing checkout configuration without claiming payment", async ({
     "Checkout de teste indisponível",
   );
   await expect(page).toHaveURL(/\/cart/);
+});
+
+test("collection concepts never invent inventory and dark pages stay within the viewport", async ({
+  page,
+}) => {
+  await page.goto("/collections/dragon-edition");
+  await expect(
+    page.getByRole("heading", { name: "DRAGON EDITION", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByText("Este conceito ainda não tem peças vinculadas.", {
+      exact: false,
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Adicionar à sacola" }),
+  ).toHaveCount(0);
+  for (const url of [
+    "/",
+    "/shop",
+    "/shop/camiseta-essencial",
+    "/cart",
+    "/about",
+  ]) {
+    await page.goto(url);
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= window.innerWidth,
+      ),
+    ).toBe(true);
+  }
 });

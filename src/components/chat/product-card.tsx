@@ -14,11 +14,11 @@ export function ChatProductCard({ product, messageId, onNavigate }: { product: C
   }
   return <article className="overflow-hidden rounded-2xl border border-border bg-card" data-testid="chat-product-card">
     <div className="flex gap-3 p-3">
-      <Link href={`/shop/${product.slug}`} onClick={onNavigate} className="relative size-20 shrink-0 overflow-hidden rounded-xl bg-latte" aria-label={`View ${product.name}`}>
+      <Link href={`/shop/${product.slug}`} onClick={onNavigate} className="relative size-20 shrink-0 overflow-hidden rounded-xl bg-secondary" aria-label={`View ${product.name}`}>
         <Image src={product.imageUrl} alt={product.imageAlt} fill sizes="80px" className="object-cover" />
       </Link>
       <div className="min-w-0 flex-1">
-        <Link href={`/shop/${product.slug}`} onClick={onNavigate} className="font-heading text-lg font-semibold hover:text-ember">{product.name}</Link>
+        <Link href={`/shop/${product.slug}`} onClick={onNavigate} className="font-heading text-lg font-semibold hover:text-primary">{product.name}</Link>
         <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{product.tastingNotes.length ? product.tastingNotes.join(" · ") : product.tagline}</p>
         <p className="mt-2 font-semibold" data-testid="chat-product-price">{formatPrice(product.priceCents)}</p>
       </div>

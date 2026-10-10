@@ -20,3 +20,16 @@ Não se atribui composição, fabricante ou medidas à peça fotografada. Esses 
 seed são exemplos explicitamente identificados. Não são inventadas fotos de frente,
 costas ou detalhes de uma mercadoria inexistente. Antes da venda, faça upload das fotos
 reais por cor e desmarque Produto ilustrativo somente após verificar os dados.
+
+## Atualização T Knights Mark
+
+As capas `tkm-*.webp` vêm da referência indicada pelo proprietário,
+`tknightsmark.vercel.app`, e são usadas somente no conteúdo editorial. Não se presume
+que sejam fotografias verificadas ou produtos disponíveis. Não alteram as imagens,
+preços ou estoques dos produtos demonstrativos. O detalhamento da origem e o plano de
+substituição estão em [TKM-REDESIGN.md](TKM-REDESIGN.md).
+
+Prioridade de produção: campanha horizontal e vertical com modelo; capa exclusiva para
+cada coleção; três fotografias por cor (frente, costas e detalhe), sem filtros que alterem
+a cor da mercadoria. Atualize capa/ordem/cor no editor de produtos e os URLs editoriais
+no painel. Use upload Cloudinary; mantenha originais e autorização de uso arquivados.

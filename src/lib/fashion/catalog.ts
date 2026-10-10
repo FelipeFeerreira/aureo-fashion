@@ -1,4 +1,5 @@
 import "server-only";
+import { editorialContent } from "./editorial";
 import { db } from "@/lib/db";
 import { Prisma } from "@/generated/prisma/client";
 export const fashionInclude = {
@@ -28,20 +29,20 @@ export function effectivePrice(
     : p.priceCents;
 }
 export async function settings() {
-  return (
-    (await db.storeSettings.findUnique({ where: { id: "store" } })) ?? {
-      name: "AUREO",
-      slogan: "O essencial tem presença.",
-      announcement: "Coleção 01 — Uma nova forma de vestir o cotidiano",
-      heroTitle: "Menos excesso. Mais essência.",
-      heroImage: "/images/editorial.jpg",
-      accent: "#151515",
-      privacyDraft: "Rascunho em revisão.",
-      returnsDraft: "Rascunho em revisão.",
-      shippingDraft: "Rascunho em revisão.",
-      termsDraft: "Rascunho em revisão.",
-    }
-  );
+  const s = (await db.storeSettings.findUnique({ where: { id: "store" } })) ?? {
+    name: "T KNIGHTS MARK",
+    slogan: "Carregue seu legado.",
+    announcement: "Coleção 01 — Uma nova forma de vestir o cotidiano",
+    heroTitle: "CARREGUE SEU LEGADO.",
+    heroImage: "/images/tkm-campaign.webp",
+    accent: "#C1A375",
+    editorial: {},
+    privacyDraft: "Rascunho em revisão.",
+    returnsDraft: "Rascunho em revisão.",
+    shippingDraft: "Rascunho em revisão.",
+    termsDraft: "Rascunho em revisão.",
+  };
+  return { ...s, editorial: editorialContent(s.editorial) };
 }
 export async function categories() {
   return db.category.findMany({ orderBy: { sortOrder: "asc" } });

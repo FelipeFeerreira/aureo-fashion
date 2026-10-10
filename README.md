@@ -1,4 +1,4 @@
-# AUREO — estúdio de essenciais
+# T KNIGHTS MARK — herança e identidade
 
 E-commerce brasileiro de moda, desenvolvido como projeto independente a partir de
 [Ember & Oak](https://github.com/FelipeFeerreira/ember-oak-coffee).
@@ -66,9 +66,11 @@ da hospedagem. `.env.example` documenta as variáveis, sem credenciais externas.
 | `DEMO_MODE` | Manter `false`; rotina herdada de limpeza é destrutiva e restrita a demos |
 
 A identidade e os rascunhos são editáveis em **Marca e conteúdo**. A marca padrão é
-AUREO. Categorias vêm do banco. Cores e tamanhos vêm das variantes. As cores base e
+T KNIGHTS MARK. Categorias vêm do banco. Cores e tamanhos vêm das variantes. As cores base e
 espaçamento estão em `src/app/globals.css`; cor principal, hero e anúncio são editáveis.
-O logotipo padrão é tipográfico e acompanha o nome configurado.
+O emblema provisório é original; nome, monograma e logo são configuráveis.
+Campanhas, coleções, manifesto, newsletter e rodapé são editáveis no painel.
+Veja [direção visual, migração e mídia](docs/TKM-REDESIGN.md).
 
 ## Fluxos implementados
 

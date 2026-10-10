@@ -1,4 +1,7 @@
 "use client";
+import type { Editorial } from "@/lib/fashion/editorial";
+import { EditorialUpload } from "./editorial-upload";
+import { EditorialEditor } from "./editorial-editor";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -44,6 +47,7 @@ export type EditableProduct = {
   images: Media[];
 };
 type Settings = {
+  editorial: Editorial;
   name: string;
   slogan: string;
   announcement: string;
@@ -652,8 +656,8 @@ export function FashionAdmin({
             void post("settings", brand);
           }}
         >
-          {(Object.keys(brand) as (keyof Settings)[])
-            .filter((k) => String(k) !== "id")
+          {(Object.keys(brand) as Exclude<keyof Settings, "editorial">[])
+            .filter((k) => !["id", "editorial"].includes(String(k)))
             .map((k) => (
               <label key={k} className={k.endsWith("Draft") ? "wide" : ""}>
                 {(
@@ -688,6 +692,17 @@ export function FashionAdmin({
                 )}
               </label>
             ))}
+          <div className="wide">
+            <p>Imagem principal da loja</p>
+            <EditorialUpload
+              onUpload={(heroImage) => setBrand({ ...brand, heroImage })}
+            />
+          </div>
+          <EditorialEditor
+            value={brand.editorial}
+            onChange={(editorial) => setBrand({ ...brand, editorial })}
+            products={products}
+          />
           <button className="button wide" disabled={busy}>
             Salvar identidade e conteúdo
           </button>

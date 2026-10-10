@@ -17,7 +17,7 @@ export function SortSelect({ filters: serverFilters }: { filters: CatalogFilters
         id={id}
         value={filters.sort}
         onChange={(event) => setValue("sort", event.target.value === "featured" ? undefined : event.target.value)}
-        className="h-10 rounded-lg border border-input bg-card px-3 text-sm text-espresso focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+        className="h-10 rounded-lg border border-input bg-card px-3 text-sm text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
       >
         {SORT_OPTIONS.map((option) => (
           <option key={option} value={option}>

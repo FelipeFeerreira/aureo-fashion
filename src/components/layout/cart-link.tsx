@@ -13,13 +13,13 @@ export function CartLink() {
     <Link
       href="/cart"
       aria-label={label}
-      className="relative inline-flex size-11 items-center justify-center rounded-full text-espresso transition-colors hover:bg-latte"
+      className="relative inline-flex size-11 items-center justify-center rounded-full text-foreground transition-colors hover:bg-secondary"
     >
       <ShoppingBag className="size-5" aria-hidden="true" />
       <span
         aria-hidden="true"
         className={cn(
-          "absolute top-1 right-0.5 flex min-w-5 items-center justify-center rounded-full bg-ember px-1 text-[0.7rem] leading-5 font-semibold text-ember-foreground transition-transform",
+          "absolute top-1 right-0.5 flex min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[0.7rem] leading-5 font-semibold text-primary-foreground transition-transform",
           count === 0 && "scale-0",
         )}
         data-testid="cart-count"

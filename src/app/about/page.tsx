@@ -1,2 +1,40 @@
-import Image from 'next/image';import Link from 'next/link';import {settings} from '@/lib/fashion/catalog';
-export default async function Page(){const s=await settings();return <><section className="section prose-page"><span className="eyebrow">UNIVERSO {s.name}</span><h1>O essencial<br/>tem presença.</h1><p>Uma marca brasileira em construção, com um olhar contemporâneo para o vestir. A nossa proposta é simples: menos ruído, mais identidade.</p><p>Peças que encontram espaço na sua rotina. Formas que deixam você ser você. Um convite para escolher com intenção.</p><Link className="button" href="/shop">Conheça a coleção →</Link></section><div className="about-photo"><Image src="/images/campaign.jpg" alt="Editorial ilustrativo de moda" fill sizes="100vw"/></div><section className="section prose-page"><h2>Transparência desde o início.</h2><p>Este é o ambiente demonstrativo da marca. Os produtos, as composições e os estoques são exemplos. As fotografias de referência são do Unsplash e não representam mercadorias disponíveis para compra real.</p></section></>;}
+import Image from "next/image";
+import Link from "next/link";
+import { settings } from "@/lib/fashion/catalog";
+import { Emblem } from "@/components/fashion/brand";
+export default async function Page() {
+  const s = await settings(),
+    e = s.editorial;
+  return (
+    <>
+      <section className="section prose-page">
+        <Emblem monogram={e.monogram} />
+        <span className="eyebrow">UNIVERSO {s.name}</span>
+        <h1>{e.manifestoTitle}</h1>
+        <p>{e.manifestoText}</p>
+        <p>{e.footerText}</p>
+        <Link className="button" href="/shop">
+          Explore o catálogo →
+        </Link>
+      </section>
+      <div className="about-photo">
+        <Image
+          src={e.campaignImage}
+          alt="Referência editorial da marca"
+          fill
+          sizes="100vw"
+        />
+      </div>
+      <section className="section prose-page">
+        <h2>Transparência desde o início.</h2>
+        <p>
+          Este é o ambiente demonstrativo da marca. Produtos, composições e
+          estoques marcados como exemplos não representam mercadorias
+          disponíveis para compra real. A campanha apresenta referências visuais
+          da T Knights Mark, separadas das fotografias ilustrativas de produtos
+          do Unsplash. Pagamentos reais permanecem desativados.
+        </p>
+      </section>
+    </>
+  );
+}

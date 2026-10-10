@@ -22,8 +22,8 @@ export function AdminLogin({ configured }: { configured: boolean }) {
     finally { setBusy(false); }
   }
   return <div className="mx-auto w-full max-w-md rounded-3xl border border-border bg-card p-8 shadow-sm sm:p-10">
-    <div className="mb-7 flex size-12 items-center justify-center rounded-2xl bg-latte"><LockKeyhole className="text-ember" aria-hidden="true" /></div>
-    <p className="text-xs font-semibold tracking-[.18em] text-ember uppercase">Acesso da marca</p>
+    <div className="mb-7 flex size-12 items-center justify-center rounded-2xl bg-secondary"><LockKeyhole className="text-primary" aria-hidden="true" /></div>
+    <p className="text-xs font-semibold tracking-[.18em] text-primary uppercase">Acesso da marca</p>
     <h1 className="mt-3 text-3xl font-semibold">Bem-vindo de volta.</h1>
     <p className="mt-3 text-sm leading-relaxed text-muted-foreground">Gerencie suas peças, imagens, estoque e pedidos em um só lugar.</p>
     {configured ? <form onSubmit={submit} className="mt-7 space-y-4">
@@ -33,7 +33,7 @@ export function AdminLogin({ configured }: { configured: boolean }) {
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
       <Button type="submit" className="w-full" disabled={busy}>{busy ? "Entrando…" : "Abrir painel"}</Button>
       <p className="text-xs text-muted-foreground">Sessão privada. Expira automaticamente em oito horas.</p>
-    </form> : <p role="status" className="mt-7 rounded-xl bg-latte p-4 text-sm">Acesso não configurado. Execute npm run admin:token no terminal local e consulte docs/ADMIN.md.</p>}
+    </form> : <p role="status" className="mt-7 rounded-xl bg-secondary p-4 text-sm">Acesso não configurado. Execute npm run admin:token no terminal local e consulte docs/ADMIN.md.</p>}
   </div>;
 }
 

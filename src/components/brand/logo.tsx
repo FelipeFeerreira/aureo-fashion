@@ -33,7 +33,7 @@ export function Logo({ className, tone = "dark" }: { className?: string; tone?: 
         <span
           className={cn(
             "font-heading text-lg font-semibold tracking-tight",
-            tone === "light" ? "text-cream" : "text-espresso",
+            tone === "light" ? "text-primary-foreground" : "text-foreground",
           )}
         >
           Ember &amp; Oak
@@ -41,7 +41,7 @@ export function Logo({ className, tone = "dark" }: { className?: string; tone?: 
         <span
           className={cn(
             "mt-0.5 text-[0.65rem] font-medium tracking-[0.18em] uppercase",
-            tone === "light" ? "text-latte/80" : "text-oak",
+            tone === "light" ? "text-secondary/80" : "text-muted-foreground",
           )}
         >
           Coffee Roasters

@@ -15,7 +15,7 @@ export function MobileFilters(props: { filters: CatalogFilters; priceBounds: Pri
           Filters{props.activeCount > 0 ? ` (${props.activeCount})` : ""}
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="w-80 overflow-y-auto bg-cream">
+      <SheetContent side="left" className="w-80 overflow-y-auto bg-background">
         <SheetHeader>
           <SheetTitle className="font-heading text-xl">Filter products</SheetTitle>
         </SheetHeader>

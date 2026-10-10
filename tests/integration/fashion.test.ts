@@ -1,3 +1,5 @@
+import { POST as saveSettings } from "@/app/api/admin/settings/route";
+import { defaultEditorial } from "@/lib/fashion/editorial";
 import { randomUUID } from "node:crypto";
 import { beforeEach, afterAll, describe, it, expect, vi } from "vitest";
 import { db } from "@/lib/db";
@@ -401,5 +403,80 @@ describe("fashion commerce against PostgreSQL", () => {
         where: { email: "fashion-test@example.com" },
       }),
     ).toMatchObject({ consentVersion: "newsletter-v1" });
+  });
+});
+
+describe("editorial administration", () => {
+  it("requires owner authentication and validates catalog references before persistence", async () => {
+    const old = await db.storeSettings.findUnique({ where: { id: "store" } });
+    const body = {
+      name: "T KNIGHTS MARK",
+      slogan: "Carregue seu legado.",
+      announcement: "Teste",
+      heroTitle: "Teste",
+      heroImage: "/images/tkm-campaign.webp",
+      accent: "#C1A375",
+      privacyDraft: "Rascunho",
+      shippingDraft: "Rascunho",
+      returnsDraft: "Rascunho",
+      termsDraft: "Rascunho",
+      editorial: defaultEditorial,
+    };
+    expect(
+      (await saveSettings(request("/api/admin/settings", body))).status,
+    ).toBe(401);
+    const session = await createAdminSession();
+    const cookie = sessionCookie(session).split(";")[0];
+    const invalid = {
+      ...body,
+      editorial: {
+        ...defaultEditorial,
+        collections: [
+          { ...defaultEditorial.collections[0], productIds: ["nonexistent"] },
+        ],
+      },
+    };
+    expect(
+      (await saveSettings(request("/api/admin/settings", invalid, cookie)))
+        .status,
+    ).toBe(400);
+    const foreign = {
+      ...body,
+      editorial: {
+        ...defaultEditorial,
+        logo: "https://res.cloudinary.com/foreign/image/upload/logo.png",
+      },
+    };
+    expect(
+      (await saveSettings(request("/api/admin/settings", foreign, cookie)))
+        .status,
+    ).toBe(400);
+    try {
+      const valid = {
+        ...body,
+        editorial: {
+          ...defaultEditorial,
+          collections: [
+            { ...defaultEditorial.collections[0], productIds: [productId] },
+          ],
+        },
+      };
+      expect(
+        (await saveSettings(request("/api/admin/settings", valid, cookie)))
+          .status,
+      ).toBe(200);
+      const saved = await db.storeSettings.findUniqueOrThrow({
+        where: { id: "store" },
+      });
+      expect(saved.editorial).toEqual(valid.editorial);
+    } finally {
+      if (old) {
+        const { id, ...data } = old;
+        await db.storeSettings.update({
+          where: { id },
+          data: { ...data, editorial: data.editorial! },
+        });
+      } else await db.storeSettings.deleteMany({ where: { id: "store" } });
+    }
   });
 });

@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: "Confirmação do pedido", robots: { 
 export default async function SuccessPage({ searchParams }: { searchParams: Promise<{ session_id?: string | string[] }> }) {
   const { session_id: sessionId } = await searchParams;
   return <div className="mx-auto max-w-2xl px-4 py-14 sm:px-6">
-    <p className="text-xs font-semibold tracking-widest text-ember uppercase">OBRIGADO PELA VISITA</p>
+    <p className="text-xs font-semibold tracking-widest text-primary uppercase">OBRIGADO PELA VISITA</p>
     <h1 className="mt-3 mb-8 text-4xl font-semibold">Seu pedido</h1>
     {typeof sessionId === "string" && /^cs_test_[a-zA-Z0-9_]{10,240}$/.test(sessionId)
       ? <Confirmation sessionId={sessionId} />

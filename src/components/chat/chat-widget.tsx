@@ -104,25 +104,25 @@ export function ChatWidget() {
       <MessageCircle aria-hidden="true" /><span>Coffee chat</span>
     </Button></Dialog.Trigger>
     <Dialog.Portal>
-      <Dialog.Overlay className="fixed inset-0 z-[60] bg-espresso/20 backdrop-blur-[2px]" />
-      <Dialog.Content className="fixed inset-0 z-[70] flex h-dvh w-full flex-col overflow-hidden border-border bg-cream shadow-2xl sm:inset-auto sm:right-6 sm:bottom-6 sm:h-[min(720px,calc(100dvh-3rem))] sm:w-[420px] sm:rounded-3xl sm:border">
-        <div className="flex shrink-0 items-start justify-between gap-3 bg-espresso px-5 py-5 text-cream">
-          <div className="flex gap-3"><Coffee className="mt-1 size-6 text-latte" aria-hidden="true" /><div>
+      <Dialog.Overlay className="fixed inset-0 z-[60] bg-primary/20 backdrop-blur-[2px]" />
+      <Dialog.Content className="fixed inset-0 z-[70] flex h-dvh w-full flex-col overflow-hidden border-border bg-background shadow-2xl sm:inset-auto sm:right-6 sm:bottom-6 sm:h-[min(720px,calc(100dvh-3rem))] sm:w-[420px] sm:rounded-3xl sm:border">
+        <div className="flex shrink-0 items-start justify-between gap-3 bg-primary px-5 py-5 text-primary-foreground">
+          <div className="flex gap-3"><Coffee className="mt-1 size-6 text-secondary" aria-hidden="true" /><div>
             <Dialog.Title className="font-heading text-xl font-semibold">Your coffee guide</Dialog.Title>
-            <Dialog.Description className="mt-1 text-xs text-latte">A little guidance. A better cup.</Dialog.Description>
+            <Dialog.Description className="mt-1 text-xs text-secondary">A little guidance. A better cup.</Dialog.Description>
           </div></div>
-          <Dialog.Close asChild><Button variant="ghost" size="icon" className="shrink-0 text-cream hover:bg-cream/10 hover:text-cream" aria-label="Close coffee chat"><X aria-hidden="true" /></Button></Dialog.Close>
+          <Dialog.Close asChild><Button variant="ghost" size="icon" className="shrink-0 text-primary-foreground hover:bg-background/10 hover:text-primary-foreground" aria-label="Close coffee chat"><X aria-hidden="true" /></Button></Dialog.Close>
         </div>
         {handoff ? <div className="min-h-0 flex-1 overflow-y-auto"><ChatLeadForm onBack={() => setHandoff(false)} /></div> : <>
           <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-4" ref={scroll} role="log" aria-label="Coffee chat conversation" aria-live={busy ? "off" : "polite"}>
             <div className="mb-5 rounded-2xl border border-border bg-card p-4 text-sm leading-relaxed">
               <p className="font-heading text-lg font-semibold">Find your everyday favorite.</p>
               <p className="mt-2 text-muted-foreground">Ask about coffee, brewing or an order. I use our catalog and written store policies.</p>
-              {!available && <p className="mt-3 rounded-xl bg-latte p-3 text-xs">AI replies are not enabled in this demo yet. You can still explore the shop, track an order or leave a message for the team.</p>}
+              {!available && <p className="mt-3 rounded-xl bg-secondary p-3 text-xs">AI replies are not enabled in this demo yet. You can still explore the shop, track an order or leave a message for the team.</p>}
             </div>
             {messages.map((message) => <div key={message.id} className={`mb-4 ${message.role === "USER" ? "ml-8" : "mr-2"}`}>
               <p className="mb-1 text-[11px] font-semibold tracking-wide text-muted-foreground">{message.role === "USER" ? "YOU" : "COFFEE GUIDE"}</p>
-              {message.text && <p className={`whitespace-pre-wrap rounded-2xl px-4 py-3 text-sm leading-relaxed [overflow-wrap:anywhere] ${message.role === "USER" ? "bg-espresso text-cream" : "border border-border bg-card"}`}>{message.text}</p>}
+              {message.text && <p className={`whitespace-pre-wrap rounded-2xl px-4 py-3 text-sm leading-relaxed [overflow-wrap:anywhere] ${message.role === "USER" ? "bg-primary text-primary-foreground" : "border border-border bg-card"}`}>{message.text}</p>}
               {!!message.products?.length && <div className="mt-3 space-y-3">{message.products.map((product) => <ChatProductCard key={product.id} product={product} messageId={message.id} onNavigate={() => setOpen(false)} />)}</div>}
               {message.order && <div className="mt-3 space-y-2 rounded-2xl border border-border bg-card p-4 text-sm">
                 <p className="font-semibold">{message.order.number}</p><p>{statusLabels[message.order.status] ?? "Please contact the team"}</p>
@@ -147,7 +147,7 @@ export function ChatWidget() {
               <Button type="submit" size="icon" className="size-12 shrink-0" disabled={!ready || busy || !input.trim() || remaining <= 0} aria-label="Send message"><Send aria-hidden="true" /></Button>
             </form>
             <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
-              <button type="button" className="min-h-8 font-semibold text-ember underline-offset-4 hover:underline" disabled={!ready} onClick={() => setHandoff(true)}>Talk to a human</button>
+              <button type="button" className="min-h-8 font-semibold text-primary underline-offset-4 hover:underline" disabled={!ready} onClick={() => setHandoff(true)}>Talk to a human</button>
               <Link href="/track-order" onClick={() => setOpen(false)} className="min-h-8 content-center hover:underline">Track order</Link>
               <Link href="/faq" onClick={() => setOpen(false)} className="min-h-8 content-center hover:underline">FAQ</Link>
             </div>

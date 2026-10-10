@@ -246,19 +246,21 @@ export function Bag({
     </div>
   );
 }
-export function Newsletter() {
+export function Newsletter({
+  title = "Faça parte do próximo capítulo.",
+  description = "Novas coleções e histórias da marca.",
+}: {
+  title?: string;
+  description?: string;
+}) {
   const [message, setMessage] = useState(""),
     [busy, setBusy] = useState(false);
   return (
     <section className="newsletter">
       <div>
         <span className="eyebrow">FAÇA PARTE DO NOSSO UNIVERSO</span>
-        <h2>
-          O próximo capítulo,
-          <br />
-          em primeira mão.
-        </h2>
-        <p>Novas coleções, histórias e um pouco de inspiração.</p>
+        <h2>{title}</h2>
+        <p>{description}</p>
       </div>
       <form
         onSubmit={async (e) => {

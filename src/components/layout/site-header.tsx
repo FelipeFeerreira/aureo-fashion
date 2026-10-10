@@ -9,7 +9,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40">
       <DemoBanner />
-      <div className="border-b border-border/80 bg-cream/90 backdrop-blur supports-backdrop-filter:bg-cream/80">
+      <div className="border-b border-border/80 bg-background/90 backdrop-blur supports-backdrop-filter:bg-background/80">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
           <div className="flex items-center gap-1">
             <MobileNav />
@@ -23,7 +23,7 @@ export function SiteHeader() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm font-medium text-espresso/80 transition-colors hover:text-ember"
+                    className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
                   >
                     {link.label}
                   </Link>
