@@ -197,3 +197,9 @@ Nenhum deploy, cobrança real, domínio, conta externa ou e-mail foi criado/envi
 [Auditoria da fundação](docs/AUDIT.md) · [Testes](docs/TESTING.md) ·
 [Implantação](docs/DEPLOYMENT.md) · [Assistente](docs/CHAT.md).
 Documentação antiga está preservada em `docs/foundation` para referência histórica.
+
+---
+
+## License
+
+MIT - see [LICENSE](LICENSE). You may use, modify and redistribute this code with attribution.
