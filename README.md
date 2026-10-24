@@ -11,6 +11,13 @@ medidas, composições, popularidade e estoques do seed são ilustrativos. Não 
 ou faturamento inventados. O checkout aceita somente credenciais Stripe de teste e a
 confirmação depende de webhook assinado. Pix não está habilitado.
 
+| | |
+|:--|:--|
+| **Live demo** | Not deployed — the previous Vercel URL is offline; run locally |
+| **Screenshots** | [docs/screenshots](docs/screenshots) |
+| **Stack** | Next.js 16 · React 19 · TypeScript · PostgreSQL · Prisma 7 · Tailwind · Stripe (test mode) |
+| **License** | MIT — [LICENSE](LICENSE) |
+
 ## Ubuntu: começar
 
 Requisitos verificados: Node **24.21.0**, npm **11.19.0**, Git **2.53.0**, Docker Engine
@@ -199,6 +206,12 @@ Nenhum deploy, cobrança real, domínio, conta externa ou e-mail foi criado/envi
 Documentação antiga está preservada em `docs/foundation` para referência histórica.
 
 ---
+
+## O que eu faria a seguir
+
+- Redeployar uma demonstração pública com o seed ilustrativo e o aviso de ambiente demo.
+- Habilitar Pix e revisar as regras de frete e tributação antes de qualquer venda real.
+- Adicionar teste end-to-end de carrinho → checkout → webhook assinado.
 
 ## License
 
