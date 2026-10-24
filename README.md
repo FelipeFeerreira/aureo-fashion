@@ -15,6 +15,7 @@ confirmação depende de webhook assinado. Pix não está habilitado.
 |:--|:--|
 | **Live demo** | Not deployed — the previous Vercel URL is offline; run locally |
 | **Screenshots** | [docs/screenshots](docs/screenshots) |
+| **CI** | [![CI](https://github.com/FelipeFeerreira/aureo-fashion/actions/workflows/ci.yml/badge.svg)](https://github.com/FelipeFeerreira/aureo-fashion/actions/workflows/ci.yml) |
 | **Stack** | Next.js 16 · React 19 · TypeScript · PostgreSQL · Prisma 7 · Tailwind · Stripe (test mode) |
 | **License** | MIT — [LICENSE](LICENSE) |
 
